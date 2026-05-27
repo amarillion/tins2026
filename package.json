@@ -1,0 +1,28 @@
+{
+	"name": "ts-vite-phaser3",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"test": "vitest",
+		"lint": "eslint"
+	},
+	"devDependencies": {
+		"@eslint/js": "10.0.1",
+		"@stylistic/eslint-plugin": "5.10.0",
+		"@types/webfontloader": "1.6.38",
+		"eslint": "10.4.0",
+		"globals": "17.6.0",
+		"typescript": "6.0.3",
+		"typescript-eslint": "8.60.0",
+		"vite": "8.0.14",
+		"vitest": "4.1.7"
+	},
+	"dependencies": {
+		"phaser": "4.1.0",
+		"webfontloader": "1.6.28"
+	}
+}
