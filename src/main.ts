@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import BootScene from './scenes/Boot.js';
 import SplashScene from './scenes/Splash.js';
 import GameScene from './scenes/Game.js';
+import { Maze } from './scenes/Maze.js';
 
 const gameConfig = {
 	type: Phaser.AUTO,
@@ -12,7 +13,7 @@ const gameConfig = {
 	scale: {
 		mode: Phaser.Scale.RESIZE,
 	},
-	scene: [ BootScene, SplashScene, GameScene ],
+	scene: [ BootScene, SplashScene, GameScene, Maze ],
 };
 
 class Game extends Phaser.Game {

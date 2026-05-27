@@ -15,6 +15,7 @@ export default class extends Phaser.Scene {
 
 		this.load.image('loaderBg', './images/loader-bg.png');
 		this.load.image('loaderBar', './images/loader-bar.png');
+		this.load.image('pipes', './images/pipes.png');
 
 		WebFont.load({
 			google: {
@@ -26,7 +27,7 @@ export default class extends Phaser.Scene {
 
 	update() {
 		if (this.fontsReady) {
-			this.scene.start('SplashScene');
+			this.scene.start('Maze');
 		}
 	}
 
