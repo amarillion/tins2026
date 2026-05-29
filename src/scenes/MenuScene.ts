@@ -7,7 +7,14 @@ export default class extends Phaser.Scene {
 	}
 
 	create() {
-		// TODO: Start button
+		this.cameras.main.setBackgroundColor('#ff0000');
+
+		const startButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, "Start Game");
+		// TODO: styling
+		startButton.addListener('click', () => {
+			console.log("Click!");
+			this.scene.start('Maze');
+		});
 	}
 
 	preload() {
@@ -17,3 +24,5 @@ export default class extends Phaser.Scene {
 	}
 
 }
+
+

@@ -57,7 +57,12 @@ export class TinsSplash extends AbstractSplash {
 				scene.cameras.main.setBackgroundColor('#ffffff');
 
 				// TODO: scale up logo.
-				scene.add.image(400, 300, 'tins-logo');
+				const image = new Phaser.GameObjects.Image(
+					scene, scene.cameras.main.centerX, scene.cameras.main.centerY, 'tins-logo',
+				);
+				image.setScale(3.0, 3.0);
+				scene.add.existing(image);
+
 			},
 		}, 'HelixSplash');
 	}
@@ -73,7 +78,7 @@ export class HelixSplash extends AbstractSplash {
 				create(scene: Phaser.Scene) {
 					scene.cameras.main.setBackgroundColor('#dfd000');
 
-					scene.add.text(100, 100, 'HelixSoft ', {
+					scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, 'HelixSoft ', {
 						font: '64px Bangers',
 						color: '#7744ff',
 					});
