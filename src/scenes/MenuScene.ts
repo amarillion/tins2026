@@ -13,6 +13,7 @@ class Button {
 			.on('pointerout', () => button.setStyle({ fill: '#fff' }));
 	}
 }
+
 export default class extends Phaser.Scene {
 
 	constructor() {
@@ -23,8 +24,7 @@ export default class extends Phaser.Scene {
 		this.cameras.main.setBackgroundColor('#ff0000');
 
 		new Button(this.cameras.main.centerX, this.cameras.main.centerY, "Start Game", this, () => {
-			console.log("Click!");
-			this.scene.start('Maze');
+			this.scene.start('Level', { level: 5 });
 		});
 	}
 

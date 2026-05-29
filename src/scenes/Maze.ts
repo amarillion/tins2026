@@ -165,9 +165,10 @@ export class Maze extends Phaser.Scene {
 
 	reset() {
 		if (this.map) this.map.destroy();
-		const mw = Math.max(3, Math.floor(this.scale.width / TILE_WIDTH));
-		const mh = Math.max(3, Math.floor(this.scale.height / TILE_HEIGHT));
-
+		
+		const mw = Math.max(3, Math.floor(this.cameras.main.width / TILE_WIDTH));
+		const mh = Math.max(3, Math.floor(this.cameras.main.height / TILE_HEIGHT));
+		
 		this.map = this.make.tilemap({ tileWidth: TILE_WIDTH, tileHeight: TILE_HEIGHT, width: mw, height: mh });
 		const tiles = this.map.addTilesetImage("pipes");
 		this.layer0 = this.map.createBlankLayer("layer0", tiles!);
@@ -188,15 +189,19 @@ export class Maze extends Phaser.Scene {
 	}
 
 	create() {
+		// TODO: game constants...
+		this.cameras.main.setBackgroundColor('#ffff00');
+		this.cameras.main.setViewport(0, 136, 768, 768);
+
 		this.reset();
-		this.scale.on("resize", (newSize: { width: number, height: number }) => {
-			if (
-				Math.floor(newSize.width / TILE_WIDTH) !== this.map?.width ||
-				Math.floor(newSize.height / TILE_HEIGHT) !== this.map?.height
-			) {
-				this.reset();
-			}
-		});
+		// this.scale.on("resize", (newSize: { width: number, height: number }) => {
+		// 	if (
+		// 		Math.floor(newSize.width / TILE_WIDTH) !== this.map?.width ||
+		// 		Math.floor(newSize.height / TILE_HEIGHT) !== this.map?.height
+		// 	) {
+		// 		this.reset();
+		// 	}
+		// });
 	}
 
 	onChange(node: Node) {

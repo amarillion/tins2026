@@ -11,11 +11,12 @@ export default class extends Phaser.Scene {
 		this.load.image('loaderBg', './images/loader-bg.png');
 		this.load.image('loaderBar', './images/loader-bar.png');
 		this.load.image('pipes', './images/pipes.png');
-
+		this.load.image('mushroom', './images/mushroom2.png');
 	}
 
 	update() {
-		this.scene.start('TinsSplash');
+		// this.scene.start('TinsSplash');
+		this.scene.start('Level', { level: 9 });
 	}
 
 }
