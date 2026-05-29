@@ -13,7 +13,6 @@
 	"devDependencies": {
 		"@eslint/js": "10.0.1",
 		"@stylistic/eslint-plugin": "5.10.0",
-		"@types/webfontloader": "1.6.38",
 		"eslint": "10.4.0",
 		"globals": "17.6.0",
 		"typescript": "6.0.3",
@@ -23,7 +22,6 @@
 	},
 	"dependencies": {
 		"@amarillion/helixgraph": "0.8.1",
-		"phaser": "4.1.0",
-		"webfontloader": "1.6.28"
+		"phaser": "4.1.0"
 	}
 }

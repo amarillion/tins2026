@@ -1,19 +1,19 @@
 import Phaser from 'phaser';
 
 import BootScene from './scenes/Boot.js';
-import SplashScene from './scenes/Splash.js';
-import GameScene from './scenes/Game.js';
 import { Maze } from './scenes/Maze.js';
+import { TinsSplash, HelixSplash } from './scenes/Splash.js';
+import MenuScene from './scenes/MenuScene.js';
 
 const gameConfig = {
 	type: Phaser.AUTO,
 	localStorageName: 'my-game-project',
-	backgroundColor: '#ffbbff',
+	backgroundColor: '#421a42',
 	fps: { target: 60 },
 	scale: {
 		mode: Phaser.Scale.RESIZE,
 	},
-	scene: [ BootScene, SplashScene, GameScene, Maze ],
+	scene: [ BootScene, HelixSplash, TinsSplash, MenuScene, Maze ],
 };
 
 class Game extends Phaser.Game {
