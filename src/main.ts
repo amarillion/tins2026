@@ -23,7 +23,8 @@ const gameConfig = {
 
 		// NOTE: Order seems important. Level must come before the scenes it launches, or all will fail silently.
 		Level,
-		Space, Maze ],
+		Space, Maze,
+	],
 };
 
 class Game extends Phaser.Game {

@@ -77,7 +77,7 @@ export default class extends Phaser.Scene {
 	*scriptRunner() {
 		for (const line of script) {
 			this.showDialog(line.who.name, line.text);
-			yield *this.waitMsec(5000);
+			yield *this.waitMsec(3500);
 			this.clearDialog();
 		}
 	}
