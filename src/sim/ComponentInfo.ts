@@ -15,7 +15,7 @@ export type ComponentInfo = {
 	name: string,
 	size: [number, number],
 	tileIdx: number,
-	ports: Record<string, PortInfo[]>,
+	ports: Record<string, PortInfo>,
 	render?: string,
 };
 

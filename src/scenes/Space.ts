@@ -3,18 +3,11 @@ import Mushroom from "../sprites/Mushroom";
 
 import levelData from '../data/levels.json';
 import { ASTNode, evaluateExpression, Parser } from "../util/parser";
+import { inverseLerp } from "../util/math";
 
 const num = 64;
 
 const VIEWPORT_SIZE = 320;
-
-function lerp(a: number, b: number, t: number): number {
-	return a + (b - a) * t;
-}
-
-function inverseLerp(a: number, b: number, v: number): number {
-	return (v - a) / (b - a);
-}
 
 export default class extends Phaser.Scene {
 
