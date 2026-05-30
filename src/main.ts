@@ -10,13 +10,17 @@ import { CircuitBoard } from './scenes/CircuitBoard.js';
 
 const gameConfig = {
 	type: Phaser.AUTO,
-	localStorageName: 'my-game-project',
+	localStorageName: 'helix-triggies',
 	backgroundColor: '#421a42',
 	fps: { target: 60 },
+	pixelArt: true,
 	scale: {
-		mode: Phaser.Scale.RESIZE,
+		mode: Phaser.Scale.FIT,
+		width: 640,
+		height: 360,
+		autoCenter: Phaser.Scale.CENTER_BOTH,
+		autoRound: true,
 	},
-	
 	scene: [
 		BootScene, HelixSplash, TinsSplash, MenuScene,
 		Story,

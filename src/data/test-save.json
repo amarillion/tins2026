@@ -22,7 +22,7 @@
 				"rotation": 0
 			},
 			{
-				"type": "int-frac",
+				"type": "int_frac",
 				"x": 0,
 				"y": 7,
 				"rotation": 0

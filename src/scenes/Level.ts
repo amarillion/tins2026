@@ -14,7 +14,7 @@ export default class extends Phaser.Scene {
 
 		this.cameras.main.setBackgroundColor('#00ffff');
 
-		this.scene.launch('Maze');
+		this.scene.launch('CircuitBoard');
 		this.scene.launch('Space');
 	}
 

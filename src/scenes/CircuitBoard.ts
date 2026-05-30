@@ -1,11 +1,10 @@
-import { assert } from "@amarillion/helixgraph/lib/assert.js";
-import { TemplateGrid } from "@amarillion/helixgraph/lib/BaseGrid.js";
 import Phaser from "phaser";
-import componentInfo from '../data/components.json';
+import testSaveData from '../data/test-save.json';
+import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
+import { Component, LevelState } from "../sim/LevelState";
 
-const MSEC_PER_ITERATION = 20;
-const TILE_WIDTH = 64;
-const TILE_HEIGHT = 64;
+const TILE_WIDTH = 16;
+const TILE_HEIGHT = 16;
 
 export class CircuitBoard extends Phaser.Scene {
 
@@ -14,6 +13,7 @@ export class CircuitBoard extends Phaser.Scene {
 	
 	constructor() {
 		super({ key: "CircuitBoard" });
+
 	}
 
 	preload() {
@@ -32,51 +32,33 @@ export class CircuitBoard extends Phaser.Scene {
 	}
 
 	create() {
-		// TODO: game constants...
 		this.cameras.main.setBackgroundColor('#73d484');
-		this.cameras.main.setViewport(0, 136, 16*20, 16*15);
+		this.cameras.main.setViewport(0, 64, 16*20, 16*15);
 
 		this.reset();
+
+		// TODO: move out of constructor
+		const level = new LevelState();
+		level.onComponentAdded((c: Component) => this.onComponentAdded(c));
+		level.loadFromSave(testSaveData);
+
 	}
 
-	onChange(node: Node) {
+	onComponentAdded(comp: Component) {
+		
 		function drawComponent(layer: Phaser.Tilemaps.TilemapLayer, x: number, y: number, type: string) {
-			const comp = componentInfo[type];
-			
-			
-			const dirSet = aNode.dirSet();
-			// to toggle between red and grey tiles, just add 16.
-			const tileOffset = (aNode.color === "red") ? 16 : 0;
-			layer.putTileAt(TILE_IDX_BY_TERRAIN[dirSet] + tileOffset, aNode.x, aNode.y);
-		}
-
-		const isTunnel = Boolean(node.tunnel);
-		if (isTunnel) {
-			for (const tunnelPart of [ node, node.tunnel! ]) {
-				const dirSet = tunnelPart.dirSet();
-				const layer = (dirSet & HORIZONTAL) > 0 ? this.layer0 : this.layer1;
-				drawNodeOnLayer(layer!, tunnelPart);
+			const info = getComponentInfo(type);
+			for (let dx = 0; dx < info.size[0]; dx++) {
+				for (let dy = 0; dy < info.size[1]; dy++) {
+					layer.putTileAt(info.tileIdx + dx + TILESET_WIDTH * dy, x + dx, y + dy);
+				}
 			}
 		}
-		else {
-			drawNodeOnLayer(this.layer1!, node);
-		}
+
+		drawComponent(this.layer0!, comp.mx, comp.my, comp.componentType);
 	}
 
 	update(time: number) {
-		if (!this.running) return;
-
-		if (time - this.prevTime > MSEC_PER_ITERATION) {
-			this.prevTime = time;
-			
-			let allDone = true;
-			if (!this.iter!.next().done) allDone = false;
-			if (!this.iter2!.next().done) allDone = false;
-			
-			if (allDone) {
-				this.running = false;
-				setTimeout(() => this.reset(), 1000);
-			}
-		}
+		// TODO: visualizations
 	}
 }

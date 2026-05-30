@@ -1,39 +1,158 @@
 {
 	"components": {
 
-		"simple_clock": {
-			"name": "Simple Clock",
-			"size": [ 2, 2 ],
-			"tilePos": [ 0, 0 ],
+		"integer": {
+			"name": "Integer Dial 0..10",
+			"size": [ 4, 3 ],
+			"tileIdx": 3,
 			"ports": {
 				"U": {
-					"dx" : 0, 
-					"dy" : 0,
+					"delta" : [0, 2],
+					"type" : "out",
+					"calc" : "v"
+				}
+			}
+		},
+
+		"simple_clock": {
+			"name": "Simple Clock",
+			"size": [ 2, 3 ],
+			"tileIdx": 7,
+			"ports": {
+				"U": {
+					"delta": [0, 2],
 					"type" : "out",
 					"calc" : "t mod 1.0"
 				}
 			}
 		},
 
-		"xy": {
+		"output_xy": {
 			"name": "Laser Coordinate Output",
 			"size": [ 2, 2 ],
-			"tilePos": [ 0, 0 ],
+			"tileIdx": 9,
 			"ports": {
 				"X": {
-					"dx" : 0, 
-					"dy" : 0,
+					"delta": [0, 0],
 					"type" : "in",
 					"global": true
 				},
 				"Y": {
-					"dx" : 0, 
-					"dy" : 1,
+					"delta": [0, 1],
 					"type" : "in",
 					"global": true
 				}
 			}
+		},
+
+		"mul": {
+			"name": "Multiplication",
+			"size": [ 4, 2 ],
+			"tileIdx": 96,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"B": {
+					"delta": [0, 1],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 1],
+					"type": "out",
+					"calc": "A + B"
+				}
+			}
+		},
+
+		"inc": {
+			"name": "Increment by 1",
+			"size": [ 4, 1 ],
+			"tileIdx": 260,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 0],
+					"type": "out",
+					"calc": "A + 1"
+				}
+			}
+		},
+
+		"sincos": {
+			"name": "Sine and Cosine",
+			"size": [ 5, 4 ],
+			"tileIdx": 100,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [4, 1],
+					"type" : "out",
+					"calc": "cos(A * 6.28318)"
+				},
+				"V": {
+					"delta": [2, 3],
+					"type": "out",
+					"calc": "sin(A * 6.28318)"
+				}
+			}
+		},
+
+		"int_frac": {
+			"name": "Split integer and fraction",
+			"size": [ 3, 3 ],
+			"tileIdx": 288,
+			"ports": {
+				"A": {
+					"delta": [1, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [0, 2],
+					"type": "out",
+					"calc": "floor(A)"
+				},
+				"V": {
+					"delta": [2, 2],
+					"type": "out",
+					"calc": "frac(A)"
+				}
+			}
+		},
+
+		"lerp": {
+			"name": "Linear Interpolation",
+			"size": [ 3, 3 ],
+			"tileIdx": 288,
+			"ports": {
+				"L": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"A": {
+					"delta": [1, 0],
+					"type" : "in"
+				},
+				"H": {
+					"delta": [2, 0],
+					"type" : "in"
+				},
+				"V": {
+					"delta": [1, 2],
+					"type": "out",
+					"calc": "L + (H - L) * A"
+				}
+			}
 		}
+
+
 
 	}
 }

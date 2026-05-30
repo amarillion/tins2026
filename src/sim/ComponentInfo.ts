@@ -1,6 +1,8 @@
 import { assert } from '@amarillion/helixgraph/lib/assert';
 import componentInfo from '../data/components.json';
 
+export const TILESET_WIDTH = 32;
+
 export type PortInfo = {
 	dx: number,
 	dy: number,
@@ -12,7 +14,7 @@ export type PortInfo = {
 export type ComponentInfo = {
 	name: string,
 	size: [number, number],
-	tilePos: [number, number],
+	tileIdx: number,
 	ports: Record<string, PortInfo[]>,
 	render?: string,
 };
@@ -20,6 +22,6 @@ export type ComponentInfo = {
 
 export function getComponentInfo(type: string): ComponentInfo {
 	//TODO: use Zod.
-	assert(type in componentInfo.components);
+	assert(type in componentInfo.components, `Unknown component id [${type}]`);
 	return (componentInfo.components as unknown as Record<string, ComponentInfo>)[type];
 }

@@ -6,7 +6,7 @@ import { ASTNode, evaluateExpression, Parser } from "../util/parser";
 
 const num = 64;
 
-const VIEWPORT_SIZE = 768;
+const VIEWPORT_SIZE = 320;
 
 function lerp(a: number, b: number, t: number): number {
 	return a + (b - a) * t;
@@ -26,8 +26,8 @@ export default class extends Phaser.Scene {
 
 	create() {
 		this.cameras.main.setBackgroundColor('#000000');
-		this.cameras.main.setViewport(1024, 135, VIEWPORT_SIZE, VIEWPORT_SIZE);
-		this.level = 9;
+		this.cameras.main.setViewport(320, 24, VIEWPORT_SIZE, VIEWPORT_SIZE);
+		this.level = 3;
 		const levelExpression = levelData.levels[this.level].func;
 		const parser = new Parser(levelExpression);
 		const ast = parser.parse();
