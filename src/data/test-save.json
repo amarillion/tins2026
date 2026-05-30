@@ -1,0 +1,75 @@
+{
+	"saveData": {
+		"currentLevel": "5",
+		"components": [
+			{
+				"type": "integer",
+				"data": { "value": 5 },
+				"x": 0,
+				"y": 0,
+				"rotation": 0
+			},
+			{
+				"type": "simple_clock",
+				"x": 5,
+				"y": 0,
+				"rotation": 0
+			},
+			{
+				"type": "mul",
+				"x": 4,
+				"y": 4,
+				"rotation": 0
+			},
+			{
+				"type": "int-frac",
+				"x": 0,
+				"y": 7,
+				"rotation": 0
+			},
+			{
+				"type": "output_xy",
+				"x": 18,
+				"y": 1,
+				"rotation": 0,
+				"fixed": true
+			},
+			{
+				"type": "inc",
+				"x": 2,
+				"y": 13,
+				"rotation": 0
+			},
+			{
+				"type": "lerp",
+				"x": 12,
+				"y": 1,
+				"rotation": 0
+			},
+			{
+				"type": "lerp",
+				"x": 15,
+				"y": 11,
+				"rotation": 0
+			},
+			{
+				"type": "sincos",
+				"x": 10,
+				"y": 6,
+				"rotation": 0
+			},
+			{
+				"type": "sincos",
+				"x": 8,
+				"y": 11,
+				"rotation": 0
+			}
+		],
+		"connections": [
+			{
+				"from": { "x": 0, "y": 0 },
+				"to": { "x": 3, "y": 3 }
+			}
+		]
+	}
+}

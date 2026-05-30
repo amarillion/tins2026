@@ -12,6 +12,7 @@ export default class extends Phaser.Scene {
 		this.load.image('loaderBar', './images/loader-bar.png');
 		this.load.image('pipes', './images/pipes.png');
 		this.load.image('mushroom', './images/mushroom2.png');
+		this.load.image('tileset', './images/tileset.png');
 	}
 
 	update() {

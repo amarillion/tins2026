@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
 
 import BootScene from './scenes/Boot.js';
-import { Maze } from './scenes/Maze.js';
 import { TinsSplash, HelixSplash } from './scenes/Splash.js';
 import MenuScene from './scenes/MenuScene.js';
 import Level from './scenes/Level.js';
 import Space from './scenes/Space.js';
 import Story from './scenes/Story.js';
+import { CircuitBoard } from './scenes/CircuitBoard.js';
 
 const gameConfig = {
 	type: Phaser.AUTO,
@@ -23,7 +23,7 @@ const gameConfig = {
 
 		// NOTE: Order seems important. Level must come before the scenes it launches, or all will fail silently.
 		Level,
-		Space, Maze,
+		Space, CircuitBoard,
 	],
 };
 

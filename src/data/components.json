@@ -1,0 +1,39 @@
+{
+	"components": {
+
+		"simple_clock": {
+			"name": "Simple Clock",
+			"size": [ 2, 2 ],
+			"tilePos": [ 0, 0 ],
+			"ports": {
+				"U": {
+					"dx" : 0, 
+					"dy" : 0,
+					"type" : "out",
+					"calc" : "t mod 1.0"
+				}
+			}
+		},
+
+		"xy": {
+			"name": "Laser Coordinate Output",
+			"size": [ 2, 2 ],
+			"tilePos": [ 0, 0 ],
+			"ports": {
+				"X": {
+					"dx" : 0, 
+					"dy" : 0,
+					"type" : "in",
+					"global": true
+				},
+				"Y": {
+					"dx" : 0, 
+					"dy" : 1,
+					"type" : "in",
+					"global": true
+				}
+			}
+		}
+
+	}
+}
