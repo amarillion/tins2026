@@ -284,6 +284,7 @@ export class Evaluator {
 		this.registerFunction('floor', (args: number[]) => Math.floor(args[0]));
 		this.registerFunction('ceil', (args: number[]) => Math.ceil(args[0]));
 		this.registerFunction('lerp', (args: number[]) => args[0] + args[2] * (args[1] - args[0]));
+		this.registerFunction('frac', (args: number[]) => args[0] - Math.floor(args[0]));
 	}
 	
 	public registerFunction(name: string, fn: (args: number[]) => number): void {
@@ -390,7 +391,7 @@ export class Evaluator {
 }
 
 // Convenience function to parse and evaluate
-export function evaluateExpression(ast: ASTNode, variables: Record<string, number> = {}): Record<string, number> {
+export function evaluateScript(ast: ASTNode, variables: Record<string, number> = {}): Record<string, number> {
 	const evaluator = new Evaluator();
 	
 	// Set input variables
@@ -414,4 +415,16 @@ export function evaluateExpression(ast: ASTNode, variables: Record<string, numbe
 	}
 	
 	return result;
+}
+
+// Convenience function to parse and evaluate
+export function evaluateExpression(ast: ASTNode, variables: Record<string, number> = {}): number {
+	const evaluator = new Evaluator();
+	
+	// Set input variables
+	for (const [ name, value ] of Object.entries(variables)) {
+		evaluator.setVariable(name, value);
+	}
+	
+	return evaluator.evaluate(ast);
 }

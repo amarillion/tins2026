@@ -4,8 +4,7 @@ import componentInfo from '../data/components.json';
 export const TILESET_WIDTH = 32;
 
 export type PortInfo = {
-	dx: number,
-	dy: number,
+	delta: [ number, number ],
 	type: "out" | "in",
 	calc?: string,
 	global?: boolean,

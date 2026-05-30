@@ -19,10 +19,10 @@
 			"size": [ 2, 3 ],
 			"tileIdx": 7,
 			"ports": {
-				"U": {
+				"T": {
 					"delta": [0, 2],
 					"type" : "out",
-					"calc" : "t mod 1.0"
+					"calc" : "frac(t)"
 				}
 			}
 		},
@@ -61,7 +61,28 @@
 				"U": {
 					"delta": [3, 1],
 					"type": "out",
-					"calc": "A + B"
+					"calc": "A * B"
+				}
+			}
+		},
+
+		"div": {
+			"name": "Division",
+			"size": [ 4, 2 ],
+			"tileIdx": 105,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"B": {
+					"delta": [0, 1],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 1],
+					"type": "out",
+					"calc": "A / B"
 				}
 			}
 		},

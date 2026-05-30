@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import testSaveData from '../data/test-save.json';
 import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
 import { Component, Connector, LevelState } from "../sim/LevelState";
 
@@ -11,6 +10,7 @@ export class CircuitBoard extends Phaser.Scene {
 	map: Phaser.Tilemaps.Tilemap | null = null;
 	layer0: Phaser.Tilemaps.TilemapLayer | null = null;
 	connectorGraphics: Phaser.GameObjects.Graphics | null = null;
+	componentGfxMap = new Map<string, Phaser.GameObjects.Graphics>();
 
 	constructor() {
 		super({ key: "CircuitBoard" });
@@ -35,18 +35,56 @@ export class CircuitBoard extends Phaser.Scene {
 		this.connectorGraphics?.clear();
 	}
 
-	create() {
+	create(data: { level: LevelState }) {
 		this.cameras.main.setBackgroundColor('#73d484');
 		this.cameras.main.setViewport(0, 64, 16*20, 16*15);
 
 		this.reset();
 
+		console.log("Data passed: ", { data });
+		this.level = data.level;
 
-		// TODO: move out of constructor
-		const level = new LevelState();
-		level.onComponentAdded((c: Component) => this.onComponentAdded(c));
-		level.onConnectorAdded((con: Connector) => this.onConnectorAdded(con));
-		level.loadFromSave(testSaveData);
+		this.level.onComponentAdded((c: Component) => this.onComponentAdded(c));
+		this.level.onConnectorAdded((con: Connector) => this.onConnectorAdded(con));
+		this.level.onComponentUpdate((c: Component, d: Map<string, number>) => this.onComponentUpdate(c, d));
+	}
+
+	level?: LevelState;
+
+
+	onComponentUpdate(c: Component, data: Map<string, number>) {
+		const pos = [ c.mx * TILE_WIDTH, c.my * TILE_HEIGHT ];
+
+		const id = `${c.mx}-${c.my}-${c.componentType}`;
+
+		switch (c.componentType) {
+			case "sincos": {
+				if (!this.componentGfxMap.has(id)) {
+					const componentGraphics = this.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
+					this.componentGfxMap.set(id, componentGraphics);
+					console.log(`Created component graphics for ${id}, count: ${this.componentGfxMap.size}`);
+				}
+				const componentGraphics = this.componentGfxMap.get(id)!;
+				componentGraphics.clear();
+				
+				const cx = pos[0] + 40;
+				const cy = pos[1] + 24;
+				const a = (data.get('A') ?? 0) * Math.PI * 2;
+				const R = 18;
+				componentGraphics.strokeLineShape(
+					new Phaser.Geom.Line(cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				componentGraphics.strokeLineShape(
+					new Phaser.Geom.Line(cx + Math.cos(a) * R, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				componentGraphics.strokeLineShape(
+					new Phaser.Geom.Line(cx, cy + Math.sin(a) * R, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				break;
+			}
+			default: // ignore
+				break;
+		}
 	}
 
 	onComponentAdded(comp: Component) {
@@ -70,6 +108,8 @@ export class CircuitBoard extends Phaser.Scene {
 		);
 		this.connectorGraphics?.strokeLineShape(line);
 	}
+
+	counter = 0;
 
 	update(time: number) {
 		// TODO: visualizations
