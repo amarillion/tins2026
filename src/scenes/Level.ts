@@ -46,6 +46,7 @@ export default class extends Phaser.Scene {
 		this.scene.launch('Space', { level });
 
 		level.loadFromSave(testSaveData);
+		level.initializeTriggies();
 
 		this.createGameButtons();
 		this.createBuildPalette();
@@ -74,7 +75,7 @@ export default class extends Phaser.Scene {
 			let i = 0;
 			for (const text of control) {
 				new ToggleButton(this,
-					640 - (4 - i) * 40, 360 - 16, text, { group, onToggle: () => {
+					640 - (4 - i) * 40, 360 - 16, 40, 16, text, { group, onToggle: () => {
 						this.playbackMode = text;
 					} },
 				);
@@ -102,7 +103,7 @@ export default class extends Phaser.Scene {
 		let yco = 0;
 		for (const text of  [ ...components ]) {
 			new ToggleButton(this,
-				xco * 64, yco * 16, text, { group },
+				xco * 64, yco * 16, 64, 16, text, { group },
 			);
 			xco++;
 			if (xco > 4) { xco = 0; yco++; }

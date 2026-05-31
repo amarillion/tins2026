@@ -1,7 +1,26 @@
 import testSave from '../data/test-save.json';
 import allLevels from '../data/levels.json';
 import { ComponentInfo, getComponentInfo } from './ComponentInfo';
-import { evaluateExpression, Parser } from '../util/parser';
+import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/parser';
+import levelData from '../data/levels.json';
+import { inverseLerp } from '../util/math';
+import { Signal } from '../util/Signal';
+
+export class TriggieData {
+	
+	constructor(x: number, y: number) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	x = 0;
+	y = 0;
+}
+
+type CBCreateTriggie = (t: TriggieData) => void;
+type CBLaser = (x : number, y : number) => void;
+
+const NUM_TRIGGIES = 64;
 
 export class Component {
 
@@ -42,7 +61,7 @@ export class Connector {
 
 export class LevelState {
 
-	readonly currentLevel = 0; // Immutable - create a new state for next level.
+	readonly currentLevel = 7; // Immutable - create a new state for next level.
 
 	connectors: Connector[] = [];
 	components: Component[] = [];
@@ -172,14 +191,44 @@ export class LevelState {
 			}
 		}
 
-		if (this.cbLaser) {
-			this.cbLaser(globalValues);
-		}
+		const range = levelData.levels[this.currentLevel].range;
+		this.onLaser.dispatch({
+			x: inverseLerp(range[0], range[2], globalValues.get('X') ?? 0),
+			y: inverseLerp(range[1], range[3], globalValues.get('Y') ?? 0),
+		});
 
 	}
 
-	initializeTriggies(callback: (x: number, y: number) => void) {
+	cbCreateTriggie?: CBCreateTriggie;
+	onCreateTriggie(cb : CBCreateTriggie) {
+		this.cbCreateTriggie = cb;
+		for (const triggie of this.triggies) {
+			cb(triggie);
+		}
+	}
+	
+	initializeTriggies() {
+		const func = levelData.levels[this.currentLevel].func;
+		const ast = new Parser(func).parse();
+		this.createTriggies(ast);
+	}
 
+	triggies: TriggieData[] = [];
+
+	private createTriggies(ast: ASTNode) {
+		const range = levelData.levels[this.currentLevel].range;
+		for (let i = 0; i < NUM_TRIGGIES; i++) {
+			const t = i / NUM_TRIGGIES;
+			const result = evaluateScript(ast, { t });
+			const x = inverseLerp(range[0], range[2], result.x);
+			const y = inverseLerp(range[1], range[3], result.y);
+
+			const triggie = new TriggieData(x, y);
+			this.triggies.push(triggie);
+			if (this.cbCreateTriggie) {
+				this.cbCreateTriggie(triggie);
+			}
+		}
 	}
 
 	addComponent(comp: Component) {
@@ -219,9 +268,5 @@ export class LevelState {
 		this.cbComponentUpdate = cb;
 	}
 
-	cbLaser?: (data: Map<string, number>) => void;
-	onLaser(cb: (data: Map<string, number>) => void) {
-		this.cbLaser = cb;
-	}
-
+	readonly onLaser = new Signal<{x: number, y: number}>();
 }

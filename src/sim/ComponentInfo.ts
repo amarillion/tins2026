@@ -1,4 +1,4 @@
-import { assert } from '@amarillion/helixgraph/lib/assert';
+import { assert } from '../util/assert.js';
 import componentInfo from '../data/components.json';
 
 export const TILESET_WIDTH = 32;

@@ -9,6 +9,7 @@ export class ToggleButton {
 	scene: Phaser.Scene;
 	x: number;
 	y: number;
+
 	text: string;
 	isToggled: boolean;
 	group: ToggleButtonGroup | null;
@@ -32,7 +33,7 @@ export class ToggleButton {
 	 * @param {Function} config.onToggle - Callback when toggled state changes
 	 */
 	constructor(
-		scene: Phaser.Scene, x: number, y: number, text: string,
+		scene: Phaser.Scene, x: number, y: number, w: number, h: number, text: string,
 		config: {
 			isToggled?: boolean,
 			group?: ToggleButtonGroup,
@@ -50,18 +51,22 @@ export class ToggleButton {
 		this.onToggleCallback = config.onToggle || null;
 		
 		// Default styles
-		this.normalStyle = config.style || {
+		this.normalStyle = {
 			fontSize: '9px',
 			fill: '#ffffff',
 			backgroundColor: '#444444',
 			padding: { x: 4, y: 2 },
+			fixedWidth: w,
+			fixedHeight: h,
+			align: "center",
+			...config.style,
 		};
 		
-		this.toggledStyle = config.toggledStyle || {
-			fontSize: '9px',
+		this.toggledStyle = {
+			...this.normalStyle,
 			fill: '#ffff00',
 			backgroundColor: '#666666',
-			padding: { x: 4, y: 2 },
+			...config.toggledStyle,
 		};
 		
 		// Create the text object

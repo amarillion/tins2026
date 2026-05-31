@@ -1,12 +1,7 @@
 import Phaser from "phaser";
 import Mushroom from "../sprites/Mushroom";
 
-import levelData from '../data/levels.json';
-import { ASTNode, evaluateScript, Parser } from "../util/parser";
-import { inverseLerp } from "../util/math";
-import { LevelState } from "../sim/LevelState";
-
-const num = 64;
+import { LevelState, TriggieData } from "../sim/LevelState";
 
 const VIEWPORT_SIZE = 320;
 
@@ -16,19 +11,17 @@ export default class extends Phaser.Scene {
 		super({ key: 'Space' });
 	}
 
-	levelNo: number = 0;
+	level?: LevelState;
 
 	create(data: { level: LevelState }) {
 		this.cameras.main.setBackgroundColor('#000000');
 		this.cameras.main.setViewport(320, 24, VIEWPORT_SIZE, VIEWPORT_SIZE);
-		this.levelNo = 7;
-		const levelExpression = levelData.levels[this.levelNo].func;
-		const parser = new Parser(levelExpression);
-		const ast = parser.parse();
+			
+		this.level = data.level;
 
-		this.createTriggies(ast);
+		this.level.onCreateTriggie(t => this.createTriggie(t));
 
-		data.level.onLaser((dataMap: Map<string, number>) => this.setLaser(dataMap));
+		this.level.onLaser.add(({x, y}) => this.setLaser(x, y));
 
 		this.emitter = this.add.particles(0, 0, 'flares', {
 			frame: { frames: [ 'red', 'green', 'blue', 'white', 'yellow' ], cycle: true },
@@ -40,29 +33,18 @@ export default class extends Phaser.Scene {
 
 	emitter?: Phaser.GameObjects.Particles.ParticleEmitter;
 
-	createTriggies(ast: ASTNode) {
-		
-		const range = levelData.levels[this.levelNo].range;
-		for (let i = 0; i < num; i++) {
-			const t = i / num;
-			const result = evaluateScript(ast, { t });
-			const x = inverseLerp(range[0], range[2], result.x) * VIEWPORT_SIZE;
-			const y = inverseLerp(range[1], range[3], result.y) * VIEWPORT_SIZE;
-
-			const triggie = new Mushroom({ scene: this, x, y, asset: 'mushroom' });
-			this.add.existing(triggie);
-		}
+	createTriggie(t: TriggieData) {
+		const triggie = new Mushroom({ scene: this,
+			x: t.x * VIEWPORT_SIZE,
+			y: t.y * VIEWPORT_SIZE, asset: 'mushroom' });
+		this.add.existing(triggie);
 	}
 
-	setLaser(dataMap: Map<string, number>) {
-		const x = dataMap.get("X") ?? 0;
-		const y = dataMap.get("Y") ?? 0;
-
-		const range = levelData.levels[this.levelNo].range;
+	setLaser(x: number, y: number) {
 		if (this.emitter) {
 			// TODO: tween?
-			this.emitter.particleX = inverseLerp(range[0], range[2], x) * VIEWPORT_SIZE;
-			this.emitter.particleY = inverseLerp(range[0], range[2], y) * VIEWPORT_SIZE;
+			this.emitter.particleX = x * VIEWPORT_SIZE;
+			this.emitter.particleY = y * VIEWPORT_SIZE;
 		}
 	}
 
