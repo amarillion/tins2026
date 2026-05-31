@@ -141,6 +141,20 @@ export class LevelState {
 		}
 	}
 
+	emptyStart() {
+		const output = new Component('output_xy');
+		output.mx = 18;
+		output.my = 1;
+		output.fixed = true;
+		this.addComponent(output);
+
+		const clock = new Component('simple_clock');
+		clock.mx = 4;
+		clock.my = 0;
+		clock.fixed = true;
+		this.addComponent(clock);
+	}
+
 	simulate(t: number) {
 
 		// first create empty port states

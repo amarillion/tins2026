@@ -53,6 +53,9 @@ export default class extends Phaser.Scene {
 		if (data.loadFromSave) {
 			level.loadFromSave(testSaveData);
 		}
+		else {
+			level.emptyStart();
+		}
 		
 		level.initializeTriggies();
 

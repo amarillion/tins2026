@@ -13,6 +13,10 @@ export default class extends Phaser.Scene {
 		this.load.image('pipes', './images/pipes.png');
 		this.load.spritesheet('triggies', './images/Triggies.png', { frameWidth: 20, frameHeight: 20 });
 		this.load.image('tileset', './images/tileset.png');
+		this.load.image('scene1', './images/Scene1.png');
+		this.load.image('scene2', './images/Scene2.png');
+		this.load.image('scene3', './images/Scene3.png');
+		this.load.spritesheet('portraits', './images/portraits.png', { frameWidth: 64, frameHeight: 64 });
 	}
 
 	update() {
@@ -33,6 +37,7 @@ export default class extends Phaser.Scene {
 		}
 
 		// this.scene.start('TinsSplash');
+		// this.scene.start('Story');
 		this.scene.start('Level', { loadFromSave: true });
 	}
 
