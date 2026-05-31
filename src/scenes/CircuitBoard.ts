@@ -73,7 +73,6 @@ export class CircuitBoard extends Phaser.Scene {
 
 	constructor() {
 		super({ key: "CircuitBoard" });
-
 	}
 
 	preload() {
@@ -81,6 +80,8 @@ export class CircuitBoard extends Phaser.Scene {
 	}
 
 	reset() {
+		this.components.splice(0);
+
 		if (this.map) this.map.destroy();
 		
 		const mw = 20;
