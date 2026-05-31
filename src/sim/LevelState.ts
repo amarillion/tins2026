@@ -256,8 +256,7 @@ export class LevelState {
 		else {
 			// explode triggies.
 			for (const trig of this.triggies) {
-				// trig.clear('explode');
-				trig.clear('return');
+				trig.clear('explode');
 			}
 			this.onLevelComplete.dispatch(true);
 		}
