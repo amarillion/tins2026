@@ -129,6 +129,32 @@ export class LevelState {
 		return null;
 	}
 
+	//TODO: move to utility class
+	static overlaps(pos1: IPoint, size1: IPoint, pos2: IPoint, size2: IPoint) {
+		const end1 = Point.plus(pos1, size1);
+		const end2 = Point.plus(pos2, size2);
+		return !(
+			(pos1.x >= end2.x) ||
+			(pos2.x >= end1.x) ||
+			(pos1.y >= end2.y) ||
+			(pos2.y >= end1.y)
+		);
+	}
+	
+	isAreaFree(mpos: IPoint, size: IPoint) {
+		for (const comp of this.components) {
+			if (LevelState.overlaps(
+				{ x: comp.mx, y: comp.my },
+				{ x: comp.info.size[0], y: comp.info.size[1] },
+				mpos,
+				size,
+			)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	createConnector(from: IPoint, to: IPoint) {
 		const con = new Connector();
 		con.from[0] = from.x;
@@ -265,7 +291,7 @@ export class LevelState {
 	}
 
 	handleLaserKill(laserCo: Point) {
-		const CUTOFF_DISTANCE = 0.025;
+		const CUTOFF_DISTANCE = 0.03;
 		// find a triggie within range...
 		for (const trig of this.triggies) {
 			const dist = Point.length(laserCo.minus(trig));

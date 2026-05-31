@@ -1,6 +1,8 @@
-import { LevelState } from "../sim/LevelState";
+import { getComponentInfo } from "../sim/ComponentInfo";
+import { Component, LevelState } from "../sim/LevelState";
 import { assert } from "../util/assert";
 import { Point } from "../util/point";
+import { Signal } from "../util/Signal";
 
 interface DragHandler {
 	mouseDragStart(mpos: Point): void,
@@ -15,13 +17,37 @@ interface DragHandler {
 	mouseDragRelease(mpos: Point): void,
 }
 
+export class BuildModeSwitch {
 
+	readonly onBuildModeChange = new Signal<string>();
+
+	currentMode = 'Connectors';
+	setBuildMode(value: string) {
+		this.currentMode = value;
+		this.onBuildModeChange.dispatch(value);
+	}
+}
+
+const componentTypeMap: Record<string, string> = {
+	"sin+cos": "sincos",
+	// "+": "",
+	// "-": "",
+	"÷": "div",
+	"✕": "mul",
+	"int-frac": "int_frac",
+	"lerp": "lerp",
+	"clock": "simple_clock",
+	"dial": "integer",
+	"increment": "inc",
+	"monitor": "monitor",
+	// "abs",
+};
+		
 export class ConnectorBuildMode implements DragHandler {
 	
-	level: LevelState;
 	graphics: Phaser.GameObjects.Graphics;
-
-	constructor(scene: Phaser.Scene, level: LevelState) {
+	
+	constructor(public scene: Phaser.Scene, public level: LevelState, public buildModeSwitch: BuildModeSwitch) {
 		this.level = level;
 		this.graphics = scene.add.graphics({});
 	}
@@ -35,18 +61,45 @@ export class ConnectorBuildMode implements DragHandler {
 
 	mouseDragStart(mpos: Point): void {
 		this.fromPos = mpos;
+
+		const { currentMode } = this.buildModeSwitch;
+		if (currentMode in componentTypeMap) {
+			// try to place component at mpos
+			const componentType = componentTypeMap[currentMode];
+			const size = getComponentInfo(componentType).size;
+			if (this.level.isAreaFree(mpos, { x: size[0], y: size[1] } )) {
+				const comp = new Component(componentType);
+				comp.mx = mpos.x;
+				comp.my = mpos.y;
+				comp.fixed = false;
+				this.level.addComponent(comp);
+			}
+		}
+		else if (currentMode === "Delete") {
+			const comp = this.level.findComponentAt(mpos);
+			if (comp) {
+				console.log("I want to delete ", comp);
+				// delete connectors
+				// TODO
+			}
+		}
+
 	}
+
 	mouseDragMove(mpos: Point, delta: Point): void {
 		this.toPos = mpos;
 	}
+	
 	mouseDragRelease(mpos: Point): void {
 		this.toPos = mpos;
 
 		// Try to build a connector...
 		assert(this.fromPos);
 
-		if (this.level.findPort(this.fromPos) && this.level.findPort(this.toPos)) {
-			this.level.createConnector(this.fromPos, this.toPos);
+		if (this.buildModeSwitch.currentMode === "Connector") {
+			if (this.level.findPort(this.fromPos) && this.level.findPort(this.toPos)) {
+				this.level.createConnector(this.fromPos, this.toPos);
+			}
 		}
 	}
 

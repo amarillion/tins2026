@@ -4,6 +4,7 @@ import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 import levelData from '../data/levels.json';
 import { getQuickSaveData } from "../sim/SaveData";
 import { assert } from "../util/assert";
+import { BuildModeSwitch } from "../sprites/BuildMode";
 
 export default class extends Phaser.Scene {
 
@@ -16,6 +17,7 @@ export default class extends Phaser.Scene {
 	laserStep = 0;
 
 	level?: LevelState;
+	buildModeSwitch? : BuildModeSwitch;
 
 	create(data: { levelNo?: number, loadFromSave?: boolean }) {
 		this.cameras.main.setBackgroundColor('#00ffff');
@@ -24,6 +26,8 @@ export default class extends Phaser.Scene {
 		this.level = level;
 		this.level.onLevelComplete.addOnce(() => this.onLevelComplete());
 
+		this.buildModeSwitch = new BuildModeSwitch();
+		
 		this.time.addEvent({
 			delay: 1000 / 60,
 			loop: true,
@@ -43,7 +47,7 @@ export default class extends Phaser.Scene {
 			},
 		});
 	
-		this.scene.launch('CircuitBoard', { level });
+		this.scene.launch('CircuitBoard', { level, buildModeSwitch: this.buildModeSwitch });
 		this.scene.launch('Space', { level });
 
 		if (data.loadFromSave) {
@@ -119,24 +123,27 @@ export default class extends Phaser.Scene {
 	
 	createBuildPalette() {
 		const components = [
-			"sin-cos", "+", "-", "÷", "✕", "int-frac", "lerp", "clock", "dial", "inc",
+			"sin+cos", "+", "-", "÷", "✕", "int+frac", "lerp", "clock", "dial", "increment",
 			// nice to have:
 			"monitor", "abs",
 			// maybe
-			"if", "<", "neg", "sig", "modulo", "sin", "cos", "atan2", "clock+", "Matrix",
+			// "if", "<", "neg", "sig", "modulo", "sin", "cos", "atan2", "clock+", "Matrix",
 		];
 
 		const other = [
-			"Connector", "Delete", "Place",
+			"Connector", "Delete",
 		];
 
 		const group = new ToggleButtonGroup();
 
 		let xco = 0;
 		let yco = 0;
-		for (const text of  [ ...components ]) {
+		for (const text of  [ ...components, ...other ]) {
 			new ToggleButton(this,
-				xco * 64, yco * 16, 64, 16, text, { group },
+				xco * 64, yco * 16, 64, 16, text, {
+					group,
+					onToggle: (isPressed: boolean) => { if (isPressed) { this.buildModeSwitch?.setBuildMode(text); } },
+				},
 			);
 			xco++;
 			if (xco > 4) { xco = 0; yco++; }

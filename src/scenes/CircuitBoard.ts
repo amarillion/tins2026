@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
 import { Component, Connector, LevelState } from "../sim/LevelState";
 import { Point } from "../util/point";
-import { ConnectorBuildMode } from "../sprites/BuildMode";
+import { BuildModeSwitch, ConnectorBuildMode } from "../sprites/BuildMode";
 
 const TILE_WIDTH = 16;
 const TILE_HEIGHT = 16;
@@ -96,7 +96,7 @@ export class CircuitBoard extends Phaser.Scene {
 		this.connectorGraphics?.clear();
 	}
 
-	create(data: { level: LevelState }) {
+	create(data: { level: LevelState, buildModeSwitch: BuildModeSwitch }) {
 		this.cameras.main.setBackgroundColor('#73d484');
 		this.cameras.main.setViewport(0, 64, 16*20, 16*15);
 
@@ -111,7 +111,7 @@ export class CircuitBoard extends Phaser.Scene {
 		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUp(pointer));
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.onMove(pointer));
 
-		this.buildMode = new ConnectorBuildMode(this, this.level);
+		this.buildMode = new ConnectorBuildMode(this, this.level, data.buildModeSwitch);
 	}
 
 	level?: LevelState;
