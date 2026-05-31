@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { TriggieData, TriggieEvent } from '../sim/LevelState';
 import { VIEWPORT_SIZE } from '../scenes/Space';
-import { pickOne } from '../util/random';
+import { pickOne, randomInt } from '../util/random';
 
 export class Triggie extends Phaser.GameObjects.Sprite {
 	
@@ -9,10 +9,18 @@ export class Triggie extends Phaser.GameObjects.Sprite {
 	currentTween?: Phaser.Tweens.Tween;
 
 	constructor(scene: Phaser.Scene, model: TriggieData) {
-		super(scene, model.x * VIEWPORT_SIZE, model.y * VIEWPORT_SIZE, 'triggies');
+		
+		super(scene, randomInt(model.x * VIEWPORT_SIZE), randomInt(-200 - model.y * VIEWPORT_SIZE), 'triggies');
 		model.onEvent.add(data => this.onHit(data));
 		this.model = model;
-		this.play(pickOne([ "brown", "grey", "moss" ]));
+
+		this.scene.time.addEvent({
+			delay: randomInt(500),
+			callback: () => {
+				this.play(pickOne([ "brown", "grey", "moss" ]));
+				this.goBack();
+			},
+		});
 	}
 
 	onHit({ event }: TriggieEvent) {
