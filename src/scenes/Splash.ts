@@ -60,7 +60,6 @@ export class TinsSplash extends AbstractSplash {
 				const image = new Phaser.GameObjects.Image(
 					scene, scene.cameras.main.centerX, scene.cameras.main.centerY, 'tins-logo',
 				);
-				image.setScale(3.0, 3.0);
 				scene.add.existing(image);
 
 			},

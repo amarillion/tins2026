@@ -5,6 +5,11 @@ import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/par
 import levelData from '../data/levels.json';
 import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
+import { Point } from '../util/point';
+
+export type TriggieEvent = {
+	event: 'hit' | 'dead' | 'return' | 'explode',
+};
 
 export class TriggieData {
 	
@@ -13,12 +18,29 @@ export class TriggieData {
 		this.y = y;
 	}
 	
+	readonly onEvent = new Signal<TriggieEvent>();
+
+	hit() {
+		this.hits++;
+		if (this.hits === 1) {
+			this.onEvent.dispatch({ event: 'hit' });
+		}
+		else if (this.hits === 2) {
+			this.onEvent.dispatch({ event: 'dead' });
+		}
+	}
+
+	clear(event : 'explode' | 'return') {
+		this.hits = 0;
+		this.onEvent.dispatch({ event });
+	}
+
 	x = 0;
 	y = 0;
+	hits = 0;
 }
 
 type CBCreateTriggie = (t: TriggieData) => void;
-type CBLaser = (x : number, y : number) => void;
 
 const NUM_TRIGGIES = 64;
 
@@ -192,13 +214,61 @@ export class LevelState {
 		}
 
 		const range = levelData.levels[this.currentLevel].range;
-		this.onLaser.dispatch({
-			x: inverseLerp(range[0], range[2], globalValues.get('X') ?? 0),
-			y: inverseLerp(range[1], range[3], globalValues.get('Y') ?? 0),
-		});
+		const laserCo = new Point(
+			inverseLerp(range[0], range[2], globalValues.get('X') ?? 0),
+			inverseLerp(range[1], range[3], globalValues.get('Y') ?? 0),
+		);
+		this.onLaser.dispatch(laserCo);
 
+		if (this.laserKillRemain > 0) {
+			this.handleLaserKill(laserCo);
+		}
 	}
 
+	handleLaserKill(laserCo: Point) {
+		const CUTOFF_DISTANCE = 0.025;
+		// find a triggie within range...
+		for (const trig of this.triggies) {
+			const dist = Point.length(laserCo.minus(trig));
+			if (dist < CUTOFF_DISTANCE) {
+				trig.hit();
+				if (trig.hits === 2) {
+					this.fragCounter++;
+				}
+			}
+		}
+
+		if (--this.laserKillRemain === 0) {
+			this.handleLaserKillFinished();
+		}
+	}
+
+	handleLaserKillFinished() {
+		// decide if it was a win or a loss
+		if (this.fragCounter < NUM_TRIGGIES) {
+			// let all trigges return
+			for (const trig of this.triggies) {
+				trig.clear('return');
+			}
+		}
+		else {
+			// explode triggies.
+			for (const trig of this.triggies) {
+				// trig.clear('explode');
+				trig.clear('return');
+			}
+			// trigger advance to next level.
+		}
+	}
+
+	laserKillRemain = 0;
+	fragCounter = 0;
+	fireLaser() {
+		if (this.laserKillRemain > 0) { return; } // laser already fired!
+		this.fragCounter = 0;
+		this.laserKillRemain = NUM_TRIGGIES * 2;
+	}
+	
 	cbCreateTriggie?: CBCreateTriggie;
 	onCreateTriggie(cb : CBCreateTriggie) {
 		this.cbCreateTriggie = cb;

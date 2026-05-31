@@ -1,9 +1,9 @@
 import Phaser from "phaser";
-import Mushroom from "../sprites/Mushroom";
+import { Triggie } from "../sprites/Triggie.js";
 
 import { LevelState, TriggieData } from "../sim/LevelState";
 
-const VIEWPORT_SIZE = 320;
+export const VIEWPORT_SIZE = 320;
 
 export default class extends Phaser.Scene {
 
@@ -34,9 +34,7 @@ export default class extends Phaser.Scene {
 	emitter?: Phaser.GameObjects.Particles.ParticleEmitter;
 
 	createTriggie(t: TriggieData) {
-		const triggie = new Mushroom({ scene: this,
-			x: t.x * VIEWPORT_SIZE,
-			y: t.y * VIEWPORT_SIZE, asset: 'mushroom' });
+		const triggie = new Triggie(this, t);
 		this.add.existing(triggie);
 	}
 

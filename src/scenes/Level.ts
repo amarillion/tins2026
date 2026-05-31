@@ -1,8 +1,7 @@
 import Phaser from "phaser";
 import { LevelState } from "../sim/LevelState";
 import testSaveData from '../data/test-save.json';
-import { ToggleButton, ToggleButtonGroup } from "../components/ToggleButton";
-import { Button } from "../components/Button";
+import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 
 export default class extends Phaser.Scene {
 
@@ -16,6 +15,8 @@ export default class extends Phaser.Scene {
 	frameCounter = 0;
 	laserStep = 0;
 
+	level?: LevelState;
+
 	create(data: { levelNo: number }) {
 		this.levelNo = data.levelNo;
 		console.log("Started level: ", this.levelNo);
@@ -23,7 +24,8 @@ export default class extends Phaser.Scene {
 		this.cameras.main.setBackgroundColor('#00ffff');
 
 		const level = new LevelState();
-	
+		this.level = level;
+
 		this.time.addEvent({
 			delay: 1000 / 60,
 			loop: true,
@@ -34,7 +36,8 @@ export default class extends Phaser.Scene {
 					case "Pause": /* pause: do nothing */ break;
 					case "Step": this.laserStep++; this.playbackMode = "Pause"; break;
 					case "Slow": if ((this.frameCounter % 10) === 0) this.laserStep++; break;
-					case "Play": this.laserStep++; break;
+					case "Play": if ((this.frameCounter % 2) === 0) this.laserStep++; break;
+					case "Fire": this.laserStep++; if (this.level?.laserKillRemain === 0) this.playbackMode = this.oldPlaybackMode; break;
 				}
 				if (this.laserStep !== before) {
 					level?.simulate((this.laserStep % 128) / 128);
@@ -52,19 +55,25 @@ export default class extends Phaser.Scene {
 		this.createBuildPalette();
 	}
 
+	oldPlaybackMode: string = 'Play';
+
 	createGameButtons() {
 		{
-			const actions = [
-				"Quick Load", "Quick Save", "Fire Laser",
+			const actions: [string, () => void][] = [
+				[ "Quick Load", () => {} ],
+				[ "Quick Save", () => {} ],
+				[ "Fire Laser", () => {
+					this.oldPlaybackMode = this.playbackMode;
+					this.playbackMode = "Fire";
+					if (this.level) this.level.fireLaser();
+				} ],
 			];
 
-		
 			let i = 0;
-			for (const text of actions) {
-				new Button(640 - (3 - i) * 40, 0, text, this, () => {});
+			for (const [ text, callback ] of actions) {
+				new Button(640 - (3 - i) * 80, 0, 80, 16, text, this, { callback });
 				i++;
 			}
-
 		}
 		
 		{
