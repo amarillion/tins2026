@@ -83,7 +83,7 @@ export class Connector {
 
 export class LevelState {
 
-	readonly currentLevel = 7; // Immutable - create a new state for next level.
+	currentLevel = 0;
 
 	connectors: Connector[] = [];
 	components: Component[] = [];
@@ -91,6 +91,8 @@ export class LevelState {
 	levelInfo = allLevels.levels[3];
 
 	loadFromSave(data: typeof testSave) {
+
+		this.currentLevel = data.saveData.currentLevel;
 
 		for (const rawComp of data.saveData.components) {
 			const comp = new Component(rawComp.type);
@@ -257,7 +259,7 @@ export class LevelState {
 				// trig.clear('explode');
 				trig.clear('return');
 			}
-			// trigger advance to next level.
+			this.onLevelComplete.dispatch(true);
 		}
 	}
 
@@ -269,6 +271,8 @@ export class LevelState {
 		this.laserKillRemain = NUM_TRIGGIES * 2;
 	}
 	
+	readonly onLevelComplete = new Signal<true>();
+
 	cbCreateTriggie?: CBCreateTriggie;
 	onCreateTriggie(cb : CBCreateTriggie) {
 		this.cbCreateTriggie = cb;

@@ -17,7 +17,7 @@ export default class extends Phaser.Scene {
 
 	update() {
 		// this.scene.start('TinsSplash');
-		this.scene.start('Level', { level: 9 });
+		this.scene.start('Level', { loadFromSave: true });
 	}
 
 }

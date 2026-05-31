@@ -15,7 +15,7 @@ export default class extends Phaser.Scene {
 			style: { fontSize: '24px' },
 		});
 		new Button(this.cameras.main.centerX - 90, this.cameras.main.centerY + 4, 180, 36, "Load Game", this, {
-			callback: () => { this.scene.start('Level', { level: 5 }); },
+			callback: () => { this.scene.start('Level', { loadFromSave: true }); },
 			style: { fontSize: '24px' },
 		});
 	}

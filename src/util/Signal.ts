@@ -40,7 +40,7 @@ export class Signal<E> {
 	}
 
 	/** Listener will fire once and then remove itself. Useful for e.g. onFinished or onTimeOut events */
-	addOnce(listener : ListenerFunc<E>, context : unknown) {
+	addOnce(listener : ListenerFunc<E>, context : unknown = null) {
 		const binding = { listener, context, isOnce: true };
 		this._listeners.push(binding);
 		return () => this.remove(binding);

@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { LevelState } from "../sim/LevelState";
 import testSaveData from '../data/test-save.json';
 import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
+import levelData from '../data/levels.json';
 
 export default class extends Phaser.Scene {
 
@@ -17,7 +18,7 @@ export default class extends Phaser.Scene {
 
 	level?: LevelState;
 
-	create(data: { levelNo: number }) {
+	create(data: { levelNo: number, loadFromSave: boolean }) {
 		this.levelNo = data.levelNo;
 		console.log("Started level: ", this.levelNo);
 
@@ -25,6 +26,7 @@ export default class extends Phaser.Scene {
 
 		const level = new LevelState();
 		this.level = level;
+		this.level.onLevelComplete.addOnce(() => this.onLevelComplete());
 
 		this.time.addEvent({
 			delay: 1000 / 60,
@@ -48,7 +50,10 @@ export default class extends Phaser.Scene {
 		this.scene.launch('CircuitBoard', { level });
 		this.scene.launch('Space', { level });
 
-		level.loadFromSave(testSaveData);
+		if (data.loadFromSave) {
+			level.loadFromSave(testSaveData);
+		}
+		
 		level.initializeTriggies();
 
 		this.createGameButtons();
@@ -57,11 +62,29 @@ export default class extends Phaser.Scene {
 
 	oldPlaybackMode: string = 'Play';
 
+	onLevelComplete() {
+		this.time.addEvent({
+			delay: 1000,
+			callback: () => {
+				if (this.levelNo === levelData.levels.length) {
+					// TODO: Congratulations screen
+				}
+				else {
+					this.scene.start('Level', { levelNo: this.levelNo + 1 });
+				}
+			},
+		});
+	}
+
 	createGameButtons() {
 		{
 			const actions: [string, () => void][] = [
-				[ "Quick Load", () => {} ],
-				[ "Quick Save", () => {} ],
+				[ "Quick Load", () => {
+					this.scene.start('Level', { loadFromSave: true });
+				} ],
+				[ "Quick Save", () => {
+					// TODO
+				} ],
 				[ "Fire Laser", () => {
 					this.oldPlaybackMode = this.playbackMode;
 					this.playbackMode = "Fire";

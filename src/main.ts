@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 import BootScene from './scenes/Boot.js';
-import { TinsSplash, HelixSplash } from './scenes/Splash.js';
+import { TinsSplash } from './scenes/Splash.js';
 import MenuScene from './scenes/MenuScene.js';
 import Level from './scenes/Level.js';
 import Space from './scenes/Space.js';
@@ -22,7 +22,7 @@ const gameConfig = {
 		autoRound: true,
 	},
 	scene: [
-		BootScene, HelixSplash, TinsSplash, MenuScene,
+		BootScene, TinsSplash, MenuScene,
 		Story,
 
 		// NOTE: Order seems important. Level must come before the scenes it launches, or all will fail silently.

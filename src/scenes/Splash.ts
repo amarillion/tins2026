@@ -63,11 +63,12 @@ export class TinsSplash extends AbstractSplash {
 				scene.add.existing(image);
 
 			},
-		}, 'HelixSplash');
+		}, 'MenuScene');
 	}
 
 }
 
+/*
 export class HelixSplash extends AbstractSplash {
 
 	constructor() {
@@ -88,3 +89,4 @@ export class HelixSplash extends AbstractSplash {
 	}
 
 }
+*/
