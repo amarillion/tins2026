@@ -18,7 +18,7 @@ class ComponentView {
 			this.graphics = scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
 		}
 		if (component.componentType === "monitor" || component.componentType === "integer") {
-			const ofst = component.componentType === "monitor" ? 0 : 32;
+			const ofst = component.componentType === "monitor" ? 0 : 28;
 			this.text = scene.add.text(pos.x + ofst, pos.y, "", {
 				fontSize: "11px", color: "#82ff51",
 				fixedWidth: 32, fixedHeight: 32,
@@ -129,10 +129,20 @@ export class CircuitBoard extends Phaser.Scene {
 			const pos = Point.minus(pointer, this.cameras.main);
 
 			if (pointer.leftButtonDown()) {
+				const mpos = pos.scale(1 / TILE_WIDTH).floor();
+				const comp = this.level?.findComponentAt(mpos);
+
+				if (comp?.componentType === "integer") {
+					const delta = mpos.minus({ x: comp.mx, y: comp.my });
+					// check that we are touching the dial
+					if (delta.x < 2 && delta.y < 2) {
+						comp.value = (comp.value + 1) % 10;
+					}
+				}
+
 				this.isDragging = true;
 				this.dragStart = pos;
 				this.prevMousePos = pos;
-				const mpos = pos.scale(1 / TILE_WIDTH);
 				this.buildMode?.mouseDragStart(mpos);
 			}
 		}
@@ -142,14 +152,14 @@ export class CircuitBoard extends Phaser.Scene {
 		const pos = Point.minus(pointer, this.cameras.main);
 		if (this.isDragging && pointer.leftButtonReleased()) {
 			this.isDragging = false;
-			const mpos = pos.scale(1 / TILE_WIDTH);
+			const mpos = pos.scale(1 / TILE_WIDTH).floor();
 			this.buildMode?.mouseDragRelease(mpos);
 		}
 	}
 
 	onMove(pointer: Phaser.Input.Pointer) {
 		const pos = Point.minus(pointer, this.cameras.main);
-		const mpos = pos.scale(1 / TILE_WIDTH);
+		const mpos = pos.scale(1 / TILE_WIDTH).floor();
 		
 		if (this.isDragging) {
 			const delta = pos.minus(this.prevMousePos!);

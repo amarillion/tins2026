@@ -1,4 +1,4 @@
-import { Connector, LevelState } from "../sim/LevelState";
+import { LevelState } from "../sim/LevelState";
 import { assert } from "../util/assert";
 import { Point } from "../util/point";
 
@@ -34,13 +34,13 @@ export class ConnectorBuildMode implements DragHandler {
 	toPos?: Point;
 
 	mouseDragStart(mpos: Point): void {
-		this.fromPos = mpos.floor();
+		this.fromPos = mpos;
 	}
 	mouseDragMove(mpos: Point, delta: Point): void {
-		this.toPos = mpos.floor();
+		this.toPos = mpos;
 	}
 	mouseDragRelease(mpos: Point): void {
-		this.toPos = mpos.floor();
+		this.toPos = mpos;
 
 		// Try to build a connector...
 		assert(this.fromPos);

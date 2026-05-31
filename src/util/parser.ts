@@ -358,7 +358,7 @@ export class Evaluator {
 				return left * right;
 			case TokenType.DIVIDE:
 				if (right === 0) {
-					throw new Error('Division by zero');
+					return NaN;
 				}
 				return left / right;
 			default:

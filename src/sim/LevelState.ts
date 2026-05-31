@@ -171,6 +171,16 @@ export class LevelState {
 		this.addComponent(clock);
 	}
 
+	findComponentAt(mpos: Point) {
+		for (const comp of this.components) {
+			const delta = mpos.minus({ x: comp.mx, y: comp.my });
+			if (delta.x >= 0 && delta.y >= 0 && delta.x < comp.info.size[0] && delta.y < comp.info.size[1]) {
+				return comp;
+			}
+		}
+		return null;
+	}
+
 	simulate(t: number) {
 
 		// first create empty port states
