@@ -1,9 +1,68 @@
 import Phaser from "phaser";
 import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
 import { Component, Connector, LevelState } from "../sim/LevelState";
+import { Point } from "../util/point";
 
 const TILE_WIDTH = 16;
 const TILE_HEIGHT = 16;
+
+class ComponentView {
+
+	graphics?: Phaser.GameObjects.Graphics;
+	text?: Phaser.GameObjects.Text;
+
+	constructor(public component: Component, public scene: Phaser.Scene) {
+		const pos = new Point(this.component.mx * TILE_WIDTH, this.component.my * TILE_HEIGHT);
+		if (component.componentType === "sincos") {
+			this.graphics = scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
+		}
+		if (component.componentType === "monitor" || component.componentType === "integer") {
+			const ofst = component.componentType === "monitor" ? 0 : 32;
+			this.text = scene.add.text(pos.x + ofst, pos.y, "", {
+				fontSize: "11px", color: "#82ff51",
+				fixedWidth: 32, fixedHeight: 32,
+				align: 'right',
+				padding: { x: 2, y: 8 },
+			});
+		}
+	}
+
+	update() {
+		const pos = new Point(this.component.mx * TILE_WIDTH, this.component.my * TILE_HEIGHT);
+		switch (this.component.componentType) {
+			case "sincos": {
+				const cx = pos.x + 40;
+				const cy = pos.y + 24;
+				const a = (this.component.portValues.get('A') ?? 0) * Math.PI * 2;
+				const R = 18;
+				this.graphics!.clear();
+				this.graphics!.lineStyle(1, 0xffffff);
+				this.graphics!.strokeLineShape(
+					new Phaser.Geom.Line(cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				this.graphics!.lineStyle(1, 0xff8251);
+				this.graphics!.strokeLineShape(
+					new Phaser.Geom.Line(cx + Math.cos(a) * R, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				this.graphics!.lineStyle(1, 0x5182ff);
+				this.graphics!.strokeLineShape(
+					new Phaser.Geom.Line(cx, cy + Math.sin(a) * R, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
+				);
+				break;
+			}
+			case "monitor": {
+				this.text!.setText(`${this.component.portValues.get('A') ?? 0}`.slice(0, 4));
+				break;
+			}
+			case "integer": {
+				this.text!.setText(`${this.component.value}`.slice(0, 4));
+				break;
+			}
+			default: // ignore
+				break;
+		}
+	}
+}
 
 export class CircuitBoard extends Phaser.Scene {
 
@@ -46,48 +105,14 @@ export class CircuitBoard extends Phaser.Scene {
 
 		this.level.onComponentAdded((c: Component) => this.onComponentAdded(c));
 		this.level.onConnectorAdded((con: Connector) => this.onConnectorAdded(con));
-		this.level.onComponentUpdate((c: Component, d: Map<string, number>) => this.onComponentUpdate(c, d));
 	}
 
 	level?: LevelState;
 
-
-	onComponentUpdate(c: Component, data: Map<string, number>) {
-		const pos = [ c.mx * TILE_WIDTH, c.my * TILE_HEIGHT ];
-
-		const id = `${c.mx}-${c.my}-${c.componentType}`;
-
-		switch (c.componentType) {
-			case "sincos": {
-				if (!this.componentGfxMap.has(id)) {
-					const componentGraphics = this.add.graphics({ lineStyle: { width: 1, color: 0xffffff } });
-					this.componentGfxMap.set(id, componentGraphics);
-					console.log(`Created component graphics for ${id}, count: ${this.componentGfxMap.size}`);
-				}
-				const componentGraphics = this.componentGfxMap.get(id)!;
-				componentGraphics.clear();
-				
-				const cx = pos[0] + 40;
-				const cy = pos[1] + 24;
-				const a = (data.get('A') ?? 0) * Math.PI * 2;
-				const R = 18;
-				componentGraphics.strokeLineShape(
-					new Phaser.Geom.Line(cx, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
-				);
-				componentGraphics.strokeLineShape(
-					new Phaser.Geom.Line(cx + Math.cos(a) * R, cy, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
-				);
-				componentGraphics.strokeLineShape(
-					new Phaser.Geom.Line(cx, cy + Math.sin(a) * R, cx + Math.cos(a) * R, cy + Math.sin(a) * R),
-				);
-				break;
-			}
-			default: // ignore
-				break;
-		}
-	}
+	components: ComponentView[] = [];
 
 	onComponentAdded(comp: Component) {
+		this.components.push(new ComponentView(comp, this));
 		
 		function drawComponent(layer: Phaser.Tilemaps.TilemapLayer, x: number, y: number, type: string) {
 			const info = getComponentInfo(type);
@@ -111,7 +136,7 @@ export class CircuitBoard extends Phaser.Scene {
 
 	counter = 0;
 
-	update(time: number) {
-		// TODO: visualizations
+	update() {
+		this.components.forEach(c => c.update());
 	}
 }

@@ -126,6 +126,18 @@
 			}
 		},
 
+		"monitor": {
+			"name": "Monitor an output value",
+			"size": [ 2, 3 ],
+			"tileIdx": 169,
+			"ports": {
+				"A": {
+					"delta" : [0, 2],
+					"type" : "in"
+				}
+			}
+		},
+
 		"int_frac": {
 			"name": "Split integer and fraction",
 			"size": [ 3, 3 ],

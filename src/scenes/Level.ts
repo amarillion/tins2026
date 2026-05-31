@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 import { LevelState } from "../sim/LevelState";
-import testSaveData from '../data/test-save.json';
 import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 import levelData from '../data/levels.json';
+import { getQuickSaveData } from "../sim/SaveData";
 
 export default class extends Phaser.Scene {
 
@@ -51,7 +51,7 @@ export default class extends Phaser.Scene {
 		this.scene.launch('Space', { level });
 
 		if (data.loadFromSave) {
-			level.loadFromSave(testSaveData);
+			level.loadFromSave(getQuickSaveData());
 		}
 		else {
 			level.emptyStart();

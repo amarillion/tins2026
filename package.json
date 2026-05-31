@@ -22,6 +22,7 @@
 	},
 	"dependencies": {
 		"@amarillion/helixgraph": "0.8.1",
-		"phaser": "4.1.0"
+		"phaser": "4.1.0",
+		"zod": "4.4.3"
 	}
 }

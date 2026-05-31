@@ -1,0 +1,38 @@
+{
+	"saveData": {
+		"currentLevel": 0,
+		"components": [
+			{
+				"type": "monitor",
+				"data": { "value": 5 },
+				"x": 8,
+				"y": 4,
+				"rotation": 0
+			},
+			{
+				"type": "simple_clock",
+				"x": 5,
+				"y": 0,
+				"rotation": 0
+			},
+			{
+				"type": "output_xy",
+				"x": 18,
+				"y": 1,
+				"rotation": 0,
+				"fixed": true
+			}
+		],
+		"connectors": [
+			{
+				"from": [ 5, 2 ], "to": [ 8, 6 ]
+			},
+			{
+				"from": [ 5, 2 ], "to": [ 18, 1 ]
+			},
+			{
+				"from": [ 5, 2 ], "to": [ 18, 2 ]
+			}
+		]
+	}
+}

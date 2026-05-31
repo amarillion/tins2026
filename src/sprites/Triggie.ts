@@ -21,6 +21,15 @@ export class Triggie extends Phaser.GameObjects.Sprite {
 				this.goBack();
 			},
 		});
+
+		this.scene.tweens.add({
+			targets: this,
+			rotation: Math.random() * 2 * Math.PI,
+			duration: Math.random() * 2000 + 1000,
+			ease: 'Sine.easeInOut',
+			yoyo: true,
+			loop: -1,
+		});
 	}
 
 	onHit({ event }: TriggieEvent) {

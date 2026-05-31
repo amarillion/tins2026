@@ -1,4 +1,3 @@
-import testSave from '../data/test-save.json';
 import allLevels from '../data/levels.json';
 import { ComponentInfo, getComponentInfo } from './ComponentInfo';
 import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/parser';
@@ -6,6 +5,7 @@ import levelData from '../data/levels.json';
 import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
 import { Point } from '../util/point';
+import { SaveData } from './SaveData';
 
 export type TriggieEvent = {
 	event: 'hit' | 'dead' | 'return' | 'explode',
@@ -53,8 +53,8 @@ export class Component {
 	my = 0;
 	rotation = 0; /* 0-3 */
 	value = 0; // used for dials.
-
-	connectorMap = new Map<string, Connector[]>();
+	readonly portValues = new Map<string, number>();
+	readonly connectorMap = new Map<string, Connector[]>();
 
 	constructor(componentType: string) {
 		this.info = getComponentInfo(componentType);
@@ -90,7 +90,7 @@ export class LevelState {
 
 	levelInfo = allLevels.levels[3];
 
-	loadFromSave(data: typeof testSave) {
+	loadFromSave(data: SaveData) {
 
 		this.currentLevel = data.saveData.currentLevel;
 
@@ -101,7 +101,7 @@ export class LevelState {
 			comp.rotation = rawComp.rotation;
 			comp.fixed = Boolean(rawComp.fixed);
 
-			if ('data' in rawComp && 'value' in rawComp.data!) {
+			if (rawComp?.data?.value) {
 				comp.value = rawComp.data.value;
 			}
 
@@ -158,7 +158,7 @@ export class LevelState {
 	simulate(t: number) {
 
 		// first create empty port states
-		const portValues = new Map<Component, Map<string, number>>();
+		// const portValues = new Map<Component, Map<string, number>>();
 		const globalValues = new Map<string, number>();
 		const visitedComponents = new Set<Component>();
 
@@ -166,7 +166,7 @@ export class LevelState {
 			const ports = Object.entries(comp.info.ports);
 			for (const [ portName, portInfo ] of ports) {
 				if (portInfo.type === "in") {
-					if (!(portValues.get(comp)?.has(portName))) {
+					if (!(comp.portValues.has(portName))) {
 						return false;
 					};
 				}
@@ -180,11 +180,11 @@ export class LevelState {
 			const comp = openComponents.shift()!;
 			visitedComponents.add(comp);
 
-			const data = new Map<string, number>();
+			const data = comp.portValues;
 			const ports = Object.entries(comp.info.ports);
 			for (const [ portName, portInfo ] of ports) {
 				if (portInfo.type === "in") {
-					data.set(portName, portValues.get(comp)!.get(portName)!);
+					data.set(portName, comp.portValues.get(portName)!);
 				}
 			}
 
@@ -206,10 +206,7 @@ export class LevelState {
 						const otherComp = con.toComponent;
 						const otherPort = con.toPort;
 						if (otherComp && otherPort) {
-							if (!portValues.has(otherComp)) {
-								portValues.set(otherComp, new Map<string, number>());
-							}
-							portValues.get(otherComp)!.set(otherPort, value);
+							otherComp.portValues.set(otherPort, value);
 							if (otherComp.info.ports[otherPort].global) {
 								globalValues.set(otherPort, value);
 							}
@@ -224,9 +221,9 @@ export class LevelState {
 				}
 			}
 
-			if (this.cbComponentUpdate) {
-				this.cbComponentUpdate(comp, data);
-			}
+			// if (this.cbComponentUpdate) {
+			// 	this.cbComponentUpdate(comp, data);
+			// }
 		}
 
 		const range = levelData.levels[this.currentLevel].range;
@@ -350,10 +347,10 @@ export class LevelState {
 		}
 	}
 
-	cbComponentUpdate?: (comp: Component, data: Map<string, number>) => void;
-	onComponentUpdate(cb: (comp: Component, data: Map<string, number>) => void) {
-		this.cbComponentUpdate = cb;
-	}
+	// cbComponentUpdate?: (comp: Component, data: Map<string, number>) => void;
+	// onComponentUpdate(cb: (comp: Component, data: Map<string, number>) => void) {
+	// 	this.cbComponentUpdate = cb;
+	// }
 
 	readonly onLaser = new Signal<{x: number, y: number}>();
 }
