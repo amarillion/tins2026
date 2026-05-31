@@ -34,6 +34,7 @@ const gameConfig = {
 class Game extends Phaser.Game {
 	constructor() {
 		super(gameConfig);
+		this.input.mouse?.disableContextMenu();
 	}
 }
 

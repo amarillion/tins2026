@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { getComponentInfo, TILESET_WIDTH } from "../sim/ComponentInfo";
 import { Component, Connector, LevelState } from "../sim/LevelState";
 import { Point } from "../util/point";
+import { ConnectorBuildMode } from "../sprites/BuildMode";
 
 const TILE_WIDTH = 16;
 const TILE_HEIGHT = 16;
@@ -101,16 +102,61 @@ export class CircuitBoard extends Phaser.Scene {
 
 		this.reset();
 
-		console.log("Data passed: ", { data });
 		this.level = data.level;
 
 		this.level.onComponentAdded((c: Component) => this.onComponentAdded(c));
 		this.level.onConnectorAdded((con: Connector) => this.onConnectorAdded(con));
+
+		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.onDown(pointer));
+		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUp(pointer));
+		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.onMove(pointer));
+
+		this.buildMode = new ConnectorBuildMode(this, this.level);
 	}
 
 	level?: LevelState;
 
 	components: ComponentView[] = [];
+
+	buildMode?: ConnectorBuildMode;
+
+	isDragging = false;
+	dragStart: Point | null = null;
+	prevMousePos? : Point;
+	
+	onDown(pointer : Phaser.Input.Pointer) {
+		if (pointer.camera === this.cameras.main) {
+			const pos = Point.minus(pointer, this.cameras.main);
+
+			if (pointer.leftButtonDown()) {
+				this.isDragging = true;
+				this.dragStart = pos;
+				this.prevMousePos = pos;
+				const mpos = pos.scale(1 / TILE_WIDTH);
+				this.buildMode?.mouseDragStart(mpos);
+			}
+		}
+	}
+
+	onUp(pointer: Phaser.Input.Pointer) {
+		const pos = Point.minus(pointer, this.cameras.main);
+		if (this.isDragging && pointer.leftButtonReleased()) {
+			this.isDragging = false;
+			const mpos = pos.scale(1 / TILE_WIDTH);
+			this.buildMode?.mouseDragRelease(mpos);
+		}
+	}
+
+	onMove(pointer: Phaser.Input.Pointer) {
+		const pos = Point.minus(pointer, this.cameras.main);
+		const mpos = pos.scale(1 / TILE_WIDTH);
+		
+		if (this.isDragging) {
+			const delta = pos.minus(this.prevMousePos!);
+			this.buildMode?.mouseDragMove(mpos, delta);
+			this.prevMousePos = pos;
+		}
+	}
 
 	onComponentAdded(comp: Component) {
 		this.components.push(new ComponentView(comp, this));

@@ -1,21 +1,21 @@
 import Phaser from 'phaser';
 
-export type ButtonStyle = Phaser.Types.GameObjects.Text.TextStyle & { fill?: string | CanvasGradient | CanvasPattern };
+export type ButtonStyle = Phaser.Types.GameObjects.Text.TextStyle;
 
 const BASE_BUTTON_STYLE = {
 	fontSize: '9px',
 	padding: { x: 4, y: 2 },
 	align: "center",
 	backgroundColor: '#444444',
-	fill: '#FFFFFF',
+	color: '#FFFFFF',
 };
 
 const HOVER_STYLE = {
-	fill: '#f39c12',
+	color: '#f39c12',
 };
 
 const TOGGLED_STYLE = {
-	fill: '#ffff00',
+	color: '#ffff00',
 	backgroundColor: '#666666',
 };
 
@@ -156,7 +156,7 @@ export class ToggleButton {
 	handlePointerOut() {
 		// Restore to current state's color
 		const currentStyle = this.isToggled ? this.toggledStyle : this.normalStyle;
-		this.textObject.setStyle({ fill: currentStyle.fill });
+		this.textObject.setStyle({ color: currentStyle.color });
 	}
 	
 	/**

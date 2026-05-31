@@ -47,7 +47,7 @@ const script: ScriptItem[] = [
 	{ type: "dialog", who: CAPTAIN, text: "Just find a loophole, damn it!" },
 	{ type: "dialog", who: ENGINEER, text: "Well perhaps I can try to modulate the laser frequency by rewiring the control module." },
 	{ type: "dialog", who: CAPTAIN, text: "Make it so." },
-	{ type: "dialog", who: ENGINEER, text: "It will be ready in just a whiffy." },
+	{ type: "dialog", who: ENGINEER, text: "It will be ready in just a whiffy, captain." },
 ];
 
 export default class extends Phaser.Scene {

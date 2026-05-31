@@ -67,26 +67,3 @@ export class TinsSplash extends AbstractSplash {
 	}
 
 }
-
-/*
-export class HelixSplash extends AbstractSplash {
-
-	constructor() {
-		super(
-			'HelixSplash', {
-				preload() {},
-				create(scene: Phaser.Scene) {
-					scene.cameras.main.setBackgroundColor('#dfd000');
-
-					scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, 'HelixSoft ', {
-						font: '64px Bangers',
-						color: '#7744ff',
-					});
-				},
-			},
-			'MenuScene',
-		);
-	}
-
-}
-*/

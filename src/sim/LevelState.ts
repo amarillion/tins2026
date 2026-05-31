@@ -4,7 +4,7 @@ import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/par
 import levelData from '../data/levels.json';
 import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
-import { Point } from '../util/point';
+import { IPoint, Point } from '../util/point';
 import { SaveData } from './SaveData';
 
 export type TriggieEvent = {
@@ -109,39 +109,55 @@ export class LevelState {
 		}
 
 		for (const rawCon of data.saveData.connectors) {
-			const con = new Connector();
-			con.from[0] = rawCon.from[0];
-			con.from[1] = rawCon.from[1];
-			con.to[0] = rawCon.to[0];
-			con.to[1] = rawCon.to[1];
-
-			// find matching port, if any...
-			for (const comp of this.components) {
-				const ports = Object.entries(comp.info.ports);
-				for (const [ portName, portInfo ] of ports) {
-					console.log(`Checking component ${comp.componentType} port ${portName} at (${comp.mx + portInfo.delta[0]}, ${comp.my + portInfo.delta[1]}) against connector from (${con.from[0]}, ${con.from[1]}) to (${con.to[0]}, ${con.to[1]})`);
-					const portX = comp.mx + portInfo.delta[0];
-					const portY = comp.my + portInfo.delta[1];
-					if (portX === con.from[0] && portY === con.from[1]) {
-						con.fromComponent = comp;
-						con.fromPort = portName;
-						comp.connect(portName, con);
-						break;
-					}
-					if (portX === con.to[0] && portY === con.to[1]) {
-						con.toComponent = comp;
-						con.toPort = portName;
-						comp.connect(portName, con);
-						break;
-					}
-				}
-			}
-
-			this.addConnector(con);
+			const [ x1, y1 ] = rawCon.from;
+			const [ x2, y2 ] = rawCon.to;
+			this.createConnector({ x: x1, y: y1 }, { x: x2, y: y2 });
 		}
 	}
 
-	emptyStart() {
+	findPort(pos: IPoint) {
+		for (const comp of this.components) {
+			const ports = Object.entries(comp.info.ports);
+			for (const [ portName, portInfo ] of ports) {
+				const portX = comp.mx + portInfo.delta[0];
+				const portY = comp.my + portInfo.delta[1];
+				if (portX === pos.x && portY === pos.y) {
+					return { comp, portName };
+				}
+			}
+		}
+		return null;
+	}
+
+	createConnector(from: IPoint, to: IPoint) {
+		const con = new Connector();
+		con.from[0] = from.x;
+		con.from[1] = from.y;
+		con.to[0] = to.x;
+		con.to[1] = to.y;
+
+		// find matching port, if any...
+		
+		let result = this.findPort(from);
+		if (result) {
+			con.fromComponent = result.comp;
+			con.fromPort = result.portName;
+			result.comp.connect(result.portName, con);
+		}
+
+		result = this.findPort(to);
+		if (result) {
+			con.toComponent = result.comp;
+			con.toPort = result.portName;
+			result.comp.connect(result.portName, con);
+		}
+
+		this.addConnector(con);
+	}
+
+	emptyStart(levelNo: number) {
+		this.currentLevel = levelNo;
+
 		const output = new Component('output_xy');
 		output.mx = 18;
 		output.my = 1;

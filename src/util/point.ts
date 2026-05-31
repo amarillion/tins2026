@@ -153,4 +153,8 @@ export class Point implements IPoint {
 	contains(other: IPoint) {
 		return Point.contains(this, other);
 	}
+
+	floor() {
+		return new Point(Math.floor(this.x), Math.floor(this.y));
+	}
 }

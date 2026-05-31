@@ -3,6 +3,7 @@ import { LevelState } from "../sim/LevelState";
 import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 import levelData from '../data/levels.json';
 import { getQuickSaveData } from "../sim/SaveData";
+import { assert } from "../util/assert";
 
 export default class extends Phaser.Scene {
 
@@ -10,18 +11,13 @@ export default class extends Phaser.Scene {
 		super({ key: 'Level' });
 	}
 
-	levelNo: number = 0;
-
 	playbackMode: string = "Play";
 	frameCounter = 0;
 	laserStep = 0;
 
 	level?: LevelState;
 
-	create(data: { levelNo: number, loadFromSave: boolean }) {
-		this.levelNo = data.levelNo;
-		console.log("Started level: ", this.levelNo);
-
+	create(data: { levelNo?: number, loadFromSave?: boolean }) {
 		this.cameras.main.setBackgroundColor('#00ffff');
 
 		const level = new LevelState();
@@ -54,9 +50,10 @@ export default class extends Phaser.Scene {
 			level.loadFromSave(getQuickSaveData());
 		}
 		else {
-			level.emptyStart();
+			level.emptyStart(data.levelNo ?? 0);
 		}
 		
+		console.log("Started level: ", level.currentLevel);
 		level.initializeTriggies();
 
 		this.createGameButtons();
@@ -69,11 +66,12 @@ export default class extends Phaser.Scene {
 		this.time.addEvent({
 			delay: 1000,
 			callback: () => {
-				if (this.levelNo === levelData.levels.length) {
+				assert(this.level);
+				if (this.level.currentLevel === levelData.levels.length) {
 					// TODO: Congratulations screen
 				}
 				else {
-					this.scene.start('Level', { levelNo: this.levelNo + 1 });
+					this.scene.start('Level', { levelNo: this.level.currentLevel + 1 });
 				}
 			},
 		});

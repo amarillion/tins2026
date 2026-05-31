@@ -19,7 +19,7 @@ export default class extends Phaser.Scene {
 		this.load.spritesheet('portraits', './images/portraits.png', { frameWidth: 64, frameHeight: 64 });
 	}
 
-	update() {
+	create() {
 		const frameData = {
 			"red": [ 0 , 1 ],
 			"blue": [ 2, 3 ],
@@ -36,9 +36,9 @@ export default class extends Phaser.Scene {
 			});
 		}
 
-		// this.scene.start('TinsSplash');
+		this.scene.start('TinsSplash');
 		// this.scene.start('Story');
-		this.scene.start('Level', { loadFromSave: true });
+		// this.scene.start('Level', { loadFromSave: true });
 	}
 
 }
