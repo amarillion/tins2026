@@ -37,19 +37,15 @@ export default class extends Phaser.Scene {
 			if (isWin) {
 				this.time.delayedCall(500, () => {
 					container.play('cracked');
-					this.cameras.main.shake(1500, 0.01);
+					this.cameras.main.shake(2500, 0.01);
 				});
 			}
 			this.time.delayedCall(3000, () => {
 				assert(this.level);
 				if (isWin) {
-					// explode triggies.
-					// this.time.delayedCall(1000, () => {
-					// 	assert(this.level);
-						for (const trig of this.level.triggies) {
-							trig.clear('explode');
-						}
-					// });
+					for (const trig of this.level.triggies) {
+						trig.clear('explode');
+					}
 				}
 				else {
 					// let all trigges return
