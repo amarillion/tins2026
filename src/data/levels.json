@@ -21,6 +21,11 @@
 			"range": [-1, 0, 1, 1]
 		},
 		{
+			"title": "Circle",
+			"func": "x = cos(t * 6.28318)\ny = sin(t * 6.28318)",
+			"range": [-1, -1, 1, 1]
+		},
+		{
 			"title": "Fast Sine",
 			"func": "x = t\ny = sin(t * 2 * 6.28318)",
 			"range": [0, -1, 1, 1]
@@ -32,12 +37,7 @@
 		},
 		{
 			"title": "Parabola",
-			"func": "x = t\ny = t * t",
-			"range": [-1, -1, 1, 1]
-		},
-		{
-			"title": "Circle",
-			"func": "x = cos(t * 6.28318)\ny = sin(t * 6.28318)",
+			"func": "x = (2 * t) - 1\ny = (2 * t - 1) * (2 * t - 1)",
 			"range": [-1, -1, 1, 1]
 		},
 		{

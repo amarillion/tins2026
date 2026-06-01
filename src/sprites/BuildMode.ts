@@ -65,6 +65,10 @@ export class ConnectorBuildMode implements DragHandler {
 	fromPos?: Point;
 	toPos?: Point;
 
+	mouseOut() {
+		this.graphics.clear();
+	}
+
 	mouseDragStart(mpos: Point): void {
 		this.fromPos = mpos;
 
@@ -80,6 +84,7 @@ export class ConnectorBuildMode implements DragHandler {
 				comp.fixed = false;
 				this.level.addComponent(comp);
 			}
+			this.graphics.clear();
 		}
 		else if (currentMode === "Delete") {
 			const comp = this.level.findComponentAt(mpos);
@@ -87,6 +92,7 @@ export class ConnectorBuildMode implements DragHandler {
 				this.level.deleteComponent(comp);
 				// connectors will be automatically deleted as well.
 			}
+			this.graphics.clear();
 		}
 
 	}
@@ -106,6 +112,28 @@ export class ConnectorBuildMode implements DragHandler {
 		}
 
 		this.toPos = mpos;
+	}
+
+	mouseMove(mpos: Point): void {
+		const { currentMode } = this.buildModeSwitch;
+		if (currentMode in componentTypeMap) {
+			// try to place component at mpos
+			const componentType = componentTypeMap[currentMode];
+			const size = getComponentInfo(componentType).size;
+			const isValid = this.level.isAreaFree(mpos, { x: size[0], y: size[1] } );
+			this.graphics.clear();
+			this.graphics.fillStyle(isValid ? 0x00cc00 : 0xcc0000, 0.5);
+			this.graphics.fillRect(mpos.x * 16, mpos.y * 16, size[0] * 16, size[1] * 16);
+		}
+		else if (currentMode === "Delete") {
+			const comp = this.level.findComponentAt(mpos);
+			if (comp && !comp.fixed) {
+				const info = getComponentInfo(comp.componentType);
+				this.graphics.clear();
+				this.graphics.fillStyle(0xcc0000, 0.5);
+				this.graphics.fillRect(comp.mx * 16, comp.my * 16, info.size[0] * 16, info.size[1] * 16);
+			}
+		}
 	}
 	
 	mouseDragRelease(mpos: Point): void {

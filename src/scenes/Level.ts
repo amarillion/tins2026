@@ -20,7 +20,7 @@ export default class extends Phaser.Scene {
 	buildModeSwitch? : BuildModeSwitch;
 
 	create(data: { levelNo?: number, loadFromSave?: boolean }) {
-		this.cameras.main.setBackgroundColor('#00ffff');
+		this.cameras.main.setBackgroundColor('#122222');
 
 		const level = new LevelState();
 		this.level = level;
@@ -71,11 +71,13 @@ export default class extends Phaser.Scene {
 			delay: 1000,
 			callback: () => {
 				assert(this.level);
-				if (this.level.currentLevel === levelData.levels.length) {
-					// TODO: Congratulations screen
+				this.scene.stop('CircuitBoard');
+				this.scene.stop('Space');
+				if (this.level.currentLevel === levelData.levels.length - 1) {
+					this.scene.start('WinSplash');
 				}
 				else {
-					this.scene.start('Level', { levelNo: this.level.currentLevel + 1 });
+					this.scene.start('LevelSplash', { levelNo: this.level.currentLevel + 1 });
 				}
 			},
 		});
@@ -85,6 +87,7 @@ export default class extends Phaser.Scene {
 		{
 			const actions: [string, () => void][] = [
 				[ "Quick Load", () => {
+					// NOTE: we skip LevelSplash. It's a quick load after all.
 					this.scene.start('Level', { loadFromSave: true });
 				} ],
 				[ "Quick Save", () => {

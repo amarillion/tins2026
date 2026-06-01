@@ -74,7 +74,7 @@ export default class extends Phaser.Scene {
 
 	endScene() {
 		this.script = undefined;
-		this.scene.start('Level', { level: 1 });
+		this.scene.start('LevelSplash', { levelNo: 0 });
 	}
 
 	preload() {

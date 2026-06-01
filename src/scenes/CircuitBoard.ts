@@ -131,7 +131,7 @@ export class CircuitBoard extends Phaser.Scene {
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.onDown(pointer));
 		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUp(pointer));
 		this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.onMove(pointer));
-
+		this.input.on('pointerout', () => this.onOut());
 		this.buildMode = new ConnectorBuildMode(this, this.level, data.buildModeSwitch);
 	}
 
@@ -145,6 +145,10 @@ export class CircuitBoard extends Phaser.Scene {
 	dragStart: Point | null = null;
 	prevMousePos? : Point;
 	
+	onOut() {
+		this.buildMode?.mouseOut();
+	}
+
 	onDown(pointer : Phaser.Input.Pointer) {
 		if (pointer.camera === this.cameras.main) {
 			const pos = Point.minus(pointer, this.cameras.main);
@@ -186,6 +190,14 @@ export class CircuitBoard extends Phaser.Scene {
 			const delta = pos.minus(this.prevMousePos!);
 			this.buildMode?.mouseDragMove(mpos, delta);
 			this.prevMousePos = pos;
+		}
+		else {
+			if (pointer.camera !== this.cameras.main) {
+				this.buildMode?.mouseOut();
+			}
+			else {
+				this.buildMode?.mouseMove(mpos);
+			}
 		}
 	}
 

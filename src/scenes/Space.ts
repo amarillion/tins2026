@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { Triggie } from "../sprites/Triggie.js";
 
 import { LevelState, TriggieData } from "../sim/LevelState";
+import { randomInt } from "../util/random.js";
 
 export const VIEWPORT_SIZE = 320;
 
@@ -42,12 +43,11 @@ export default class extends Phaser.Scene {
 		if (this.emitter) {
 			// TODO: tween?
 			this.emitter.particleX = x * VIEWPORT_SIZE;
-			this.emitter.particleY = y * VIEWPORT_SIZE;
+			this.emitter.particleY = VIEWPORT_SIZE - (y * VIEWPORT_SIZE);
 		}
 	}
 
 	preload () {
-		this.load.atlas('flares', 'images/flares.png', 'images/flares.json');
 	}
 
 	update() {

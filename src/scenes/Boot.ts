@@ -16,6 +16,7 @@ export default class extends Phaser.Scene {
 		this.load.image('scene2', './images/Scene2.png');
 		this.load.image('scene3', './images/Scene3.png');
 		this.load.spritesheet('portraits', './images/portraits.png', { frameWidth: 64, frameHeight: 64 });
+		this.load.atlas('flares', 'images/flares.png', 'images/flares.json');
 	}
 
 	create() {

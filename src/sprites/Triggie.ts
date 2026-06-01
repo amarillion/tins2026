@@ -51,7 +51,7 @@ export class Triggie extends Phaser.GameObjects.Sprite {
 		this.scene.tweens.add({
 			targets: this,
 			x: this.model.x * VIEWPORT_SIZE,
-			y: this.model.y * VIEWPORT_SIZE,
+			y: VIEWPORT_SIZE - (this.model.y * VIEWPORT_SIZE),
 			ease: 'Power1',
 			duration: 1000,
 		});
