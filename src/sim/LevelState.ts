@@ -123,7 +123,7 @@ export class LevelState {
 				const portX = comp.mx + portInfo.delta[0];
 				const portY = comp.my + portInfo.delta[1];
 				if (portX === pos.x && portY === pos.y) {
-					return { comp, portName };
+					return { comp, portName, portType: portInfo.type };
 				}
 			}
 		}

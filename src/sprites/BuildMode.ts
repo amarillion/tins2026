@@ -3,6 +3,7 @@ import { Component, LevelState } from "../sim/LevelState";
 import { assert } from "../util/assert";
 import { Point } from "../util/point";
 import { Signal } from "../util/Signal";
+import Phaser from 'phaser';
 
 interface DragHandler {
 	mouseDragStart(mpos: Point): void,
@@ -52,7 +53,9 @@ export class ConnectorBuildMode implements DragHandler {
 	
 	constructor(public scene: Phaser.Scene, public level: LevelState, public buildModeSwitch: BuildModeSwitch) {
 		this.level = level;
-		this.graphics = scene.add.graphics({});
+		this.graphics = scene.add.graphics({
+			lineStyle: { width: 2, color: 0x00ff00 },
+		});
 	}
 
 	redraw() {
@@ -80,7 +83,7 @@ export class ConnectorBuildMode implements DragHandler {
 		}
 		else if (currentMode === "Delete") {
 			const comp = this.level.findComponentAt(mpos);
-			if (comp) {
+			if (comp && !comp.fixed) {
 				this.level.deleteComponent(comp);
 				// connectors will be automatically deleted as well.
 			}
@@ -89,6 +92,19 @@ export class ConnectorBuildMode implements DragHandler {
 	}
 
 	mouseDragMove(mpos: Point, delta: Point): void {
+		
+		if (this.buildModeSwitch.currentMode === "Connector") {
+			const fromPort = this.level.findPort(this.fromPos!);
+			const toPort = this.level.findPort(mpos);
+			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
+			// draw line in green
+			this.graphics.clear();
+			this.graphics.lineStyle(2, isValid ? 0x00cc00 : 0x0000cc, 0.5);
+			this.graphics.strokeLineShape(
+				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, mpos.x * 16 + 8, mpos.y * 16 + 8)
+			);
+		}
+
 		this.toPos = mpos;
 	}
 	
@@ -99,7 +115,11 @@ export class ConnectorBuildMode implements DragHandler {
 		assert(this.fromPos);
 
 		if (this.buildModeSwitch.currentMode === "Connector") {
-			if (this.level.findPort(this.fromPos) && this.level.findPort(this.toPos)) {
+			this.graphics.clear();
+			const fromPort = this.level.findPort(this.fromPos!);
+			const toPort = this.level.findPort(mpos);
+			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
+			if (isValid) {
 				this.level.createConnector(this.fromPos, this.toPos);
 			}
 		}

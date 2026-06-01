@@ -10,7 +10,6 @@ export default class extends Phaser.Scene {
 
 		this.load.image('loaderBg', './images/loader-bg.png');
 		this.load.image('loaderBar', './images/loader-bar.png');
-		this.load.image('pipes', './images/pipes.png');
 		this.load.spritesheet('triggies', './images/Triggies.png', { frameWidth: 20, frameHeight: 20 });
 		this.load.image('tileset', './images/tileset.png');
 		this.load.image('scene1', './images/Scene1.png');
