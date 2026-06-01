@@ -319,24 +319,7 @@ export class LevelState {
 		}
 
 		if (--this.laserKillRemain === 0) {
-			this.handleLaserKillFinished();
-		}
-	}
-
-	handleLaserKillFinished() {
-		// decide if it was a win or a loss
-		if (this.fragCounter < NUM_TRIGGIES) {
-			// let all trigges return
-			for (const trig of this.triggies) {
-				trig.clear('return');
-			}
-		}
-		else {
-			// explode triggies.
-			for (const trig of this.triggies) {
-				trig.clear('explode');
-			}
-			this.onLevelComplete.dispatch(true);
+			this.onLaserCycleComplete.dispatch(this.fragCounter === NUM_TRIGGIES);
 		}
 	}
 
@@ -348,7 +331,7 @@ export class LevelState {
 		this.laserKillRemain = NUM_TRIGGIES * 2;
 	}
 	
-	readonly onLevelComplete = new Signal<true>();
+	readonly onLaserCycleComplete = new Signal<boolean>();
 
 	cbCreateTriggie?: CBCreateTriggie;
 	onCreateTriggie(cb : CBCreateTriggie) {

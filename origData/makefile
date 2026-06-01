@@ -9,7 +9,7 @@ default: all ;
 
 TILESET=$(DEST)/tileset.png
 
-INFILES=Scene1 Scene2 Scene3 portraits Triggies
+INFILES=Scene1 Scene2 Scene3 portraits Triggies container
 OUTFILES=$(patsubst %,$(DEST)/%.png,$(INFILES))
 
 

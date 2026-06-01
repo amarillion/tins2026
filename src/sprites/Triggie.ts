@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { TriggieData, TriggieEvent } from '../sim/LevelState';
-import { VIEWPORT_SIZE } from '../scenes/Space';
+import { VIEWPORT_SIZE, MARGIN } from '../scenes/Space';
 import { pickOne, randomInt } from '../util/random';
 
 export class Triggie extends Phaser.GameObjects.Sprite {
@@ -48,10 +48,11 @@ export class Triggie extends Phaser.GameObjects.Sprite {
 		if (this.currentTween) {
 			this.currentTween.stop();
 		}
+
 		this.scene.tweens.add({
 			targets: this,
-			x: this.model.x * VIEWPORT_SIZE,
-			y: VIEWPORT_SIZE - (this.model.y * VIEWPORT_SIZE),
+			x: this.model.x * (VIEWPORT_SIZE - (MARGIN * 2)) + MARGIN,
+			y: VIEWPORT_SIZE - MARGIN - (this.model.y * (VIEWPORT_SIZE - (MARGIN * 2))),
 			ease: 'Power1',
 			duration: 1000,
 		});

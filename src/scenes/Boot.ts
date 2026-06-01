@@ -17,9 +17,19 @@ export default class extends Phaser.Scene {
 		this.load.image('scene3', './images/Scene3.png');
 		this.load.spritesheet('portraits', './images/portraits.png', { frameWidth: 64, frameHeight: 64 });
 		this.load.atlas('flares', 'images/flares.png', 'images/flares.json');
+		this.load.spritesheet('container', 'images/container.png', { frameWidth: 320, frameHeight: 40 });
 	}
 
 	create() {
+		const createAnims = (texture: string, repeat: number, duration: number, frameData: Record<string, number[]>) => {
+			for (const [ key, frameIdxs ] of Object.entries(frameData)) {
+				this.anims.create({
+					key,
+					repeat,
+					frames: frameIdxs.map(i => ({ key: texture, frame: i, duration })),
+				});
+			}
+		};
 		const frameData = {
 			"red": [ 0 , 1 ],
 			"blue": [ 2, 3 ],
@@ -28,13 +38,11 @@ export default class extends Phaser.Scene {
 			"grey": [ 8, 9 ],
 			"moss": [ 10, 11 ],
 		};
-		for (const [ key, frameIdxs ] of Object.entries(frameData)) {
-			this.anims.create({
-				key,
-				repeat: -1,
-				frames: frameIdxs.map(i => ({ key: "triggies", frame: i, duration: 500 })),
-			});
-		}
+		createAnims("triggies", -1, 500, frameData);
+		createAnims("container", 0, 1000, {
+			"idle": [ 0 ],
+			"cracked": [ 1, 2, 3, 4 ],
+		});
 
 		const params = new URLSearchParams(window.location.search);
 		if (params.has("debug")) {
@@ -45,6 +53,7 @@ export default class extends Phaser.Scene {
 		else {
 			this.scene.start('TinsSplash');
 		}
+
 	}
 
 }

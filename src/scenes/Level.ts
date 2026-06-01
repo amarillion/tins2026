@@ -24,7 +24,11 @@ export default class extends Phaser.Scene {
 
 		const level = new LevelState();
 		this.level = level;
-		this.level.onLevelComplete.addOnce(() => this.onLevelComplete());
+		this.level.onLaserCycleComplete.add(isWin => {
+			if (isWin) {
+				this.onLevelComplete();
+			}
+		});
 
 		this.buildModeSwitch = new BuildModeSwitch();
 		
@@ -68,7 +72,7 @@ export default class extends Phaser.Scene {
 
 	onLevelComplete() {
 		this.time.addEvent({
-			delay: 1000,
+			delay: 6000,
 			callback: () => {
 				assert(this.level);
 				this.scene.stop('CircuitBoard');
@@ -115,7 +119,7 @@ export default class extends Phaser.Scene {
 			let i = 0;
 			for (const text of control) {
 				new ToggleButton(this,
-					640 - (4 - i) * 40, 360 - 16, 40, 16, text, { group, onToggle: () => {
+					i * 40, 360 - 16, 40, 16, text, { group, onToggle: () => {
 						this.playbackMode = text;
 					} },
 				);
