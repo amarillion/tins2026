@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { LevelState } from "../sim/LevelState";
 import { Button, ToggleButton, ToggleButtonGroup } from "../components/Button";
 import levelData from '../data/levels.json';
-import { getQuickSaveData } from "../sim/SaveData";
+import { getQuickSaveData, saveGameData } from "../sim/SaveData";
 import { assert } from "../util/assert";
 import { BuildModeSwitch } from "../sprites/BuildMode";
 
@@ -88,7 +88,7 @@ export default class extends Phaser.Scene {
 					this.scene.start('Level', { loadFromSave: true });
 				} ],
 				[ "Quick Save", () => {
-					// TODO
+					saveGameData(this.level!.asSaveData());
 				} ],
 				[ "Fire Laser", () => {
 					this.oldPlaybackMode = this.playbackMode;

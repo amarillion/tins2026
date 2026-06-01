@@ -21,7 +21,7 @@ const TOGGLED_STYLE = {
 
 export class Button {
 	constructor(x: number, y: number, w: number, h: number, label: string, scene: Phaser.Scene,
-		config: { callback?: () => void, style?: ButtonStyle },
+		config: { callback?: () => void, style?: ButtonStyle, disabled?: boolean } = {},
 	) {
 		const button = scene.add.text(x, y, label);
 		const normalStyle = {
@@ -39,14 +39,18 @@ export class Button {
 			...HOVER_STYLE,
 			...TOGGLED_STYLE,
 		};
+		const disabledStyle = {
+			...normalStyle,
+			color: '#888888',
+		};
 		button
 			.setOrigin(0)
-			.setStyle(normalStyle)
+			.setStyle(config.disabled ? disabledStyle : normalStyle)
 			.setInteractive({ useHandCursor: true })
-			.on('pointerdown', () => { button.setStyle(downStyle); if (config.callback) { config.callback(); } })
-			.on('pointerup', () => button.setStyle(hoverStyle))
-			.on('pointerover', () => button.setStyle(hoverStyle))
-			.on('pointerout', () => button.setStyle(normalStyle));
+			.on('pointerdown', () => { if (!config.disabled) { button.setStyle(downStyle); if (config.callback) { config.callback(); } } })
+			.on('pointerup', () => { if (!config.disabled) { button.setStyle(hoverStyle); } })
+			.on('pointerover', () => { if (!config.disabled) { button.setStyle(hoverStyle); } })
+			.on('pointerout', () => { if (!config.disabled) { button.setStyle(normalStyle); } });
 	}
 }
 

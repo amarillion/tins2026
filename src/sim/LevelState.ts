@@ -436,5 +436,27 @@ export class LevelState {
 	// 	this.cbComponentUpdate = cb;
 	// }
 
-	readonly onLaser = new Signal<{x: number, y: number}>();
+	readonly onLaser = new Signal<IPoint>();
+
+	asSaveData(): SaveData {
+		return {
+			saveData: {
+				currentLevel: this.currentLevel,
+				components: this.components.map(comp => ({
+					type: comp.componentType,
+					x: comp.mx,
+					y: comp.my,
+					rotation: comp.rotation,
+					fixed: comp.fixed,
+					data: {
+						value: comp.value,
+					},
+				})),
+				connectors: this.connectors.map(con => ({
+					from: [ con.from[0], con.from[1] ],
+					to: [ con.to[0], con.to[1] ],
+				})),
+			},
+		};
+	}
 }

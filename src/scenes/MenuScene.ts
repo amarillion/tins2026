@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { Button } from '../components/Button';
+import { hasValidSaveData } from '../sim/SaveData';
 
 export default class extends Phaser.Scene {
 
@@ -14,8 +15,10 @@ export default class extends Phaser.Scene {
 			callback: () => { this.scene.start('Story'); },
 			style: { fontSize: '24px' },
 		});
+
 		new Button(this.cameras.main.centerX - 90, this.cameras.main.centerY + 4, 180, 36, "Load Game", this, {
 			callback: () => { this.scene.start('Level', { loadFromSave: true }); },
+			disabled: !hasValidSaveData(),
 			style: { fontSize: '24px' },
 		});
 	}

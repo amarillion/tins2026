@@ -36,9 +36,15 @@ export default class extends Phaser.Scene {
 			});
 		}
 
-		// this.scene.start('TinsSplash');
-		// this.scene.start('Story');
-		this.scene.start('Level', { levelNo: 4 });
+		const params = new URLSearchParams(window.location.search);
+		if (params.has("debug")) {
+			// parse request params
+			const levelNo = params.get("level") ?? "0";
+			this.scene.start('Level', { levelNo: parseInt(levelNo) });
+		}
+		else {
+			this.scene.start('TinsSplash');
+		}
 	}
 
 }

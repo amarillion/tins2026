@@ -40,6 +40,22 @@ function parseSaveData(jsonData: unknown): SaveData {
 	return result;
 }
 
+export function hasValidSaveData(): boolean {
+	const sessionSaveData = localStorage.getItem("tins-quick-save") ?? '';
+	try {
+		parseSaveData(JSON.parse(sessionSaveData));
+		return true;
+	} catch (_error) {
+		return false;
+	}
+}
+
 export function getQuickSaveData(): SaveData {
-	return parseSaveData(saveData);
+	// return parseSaveData(saveData);
+	return parseSaveData(JSON.parse(localStorage.getItem("tins-quick-save") ?? ''));
+}
+
+export function saveGameData(data: SaveData) {
+	// save to local storage
+	localStorage.setItem("tins-quick-save", JSON.stringify(data));
 }
