@@ -4,7 +4,7 @@ import { ASTNode, evaluateExpression, evaluateScript, Parser } from '../util/par
 import levelData from '../data/levels.json';
 import { inverseLerp } from '../util/math';
 import { Signal } from '../util/Signal';
-import { IPoint, Point } from '../util/point';
+import { IPoint, Point, shortestDistanceToSegment } from '../util/point';
 import { SaveData } from './SaveData';
 
 export type TriggieEvent = {
@@ -203,6 +203,20 @@ export class LevelState {
 			const delta = mpos.minus({ x: comp.mx, y: comp.my });
 			if (delta.x >= 0 && delta.y >= 0 && delta.x < comp.info.size[0] && delta.y < comp.info.size[1]) {
 				return comp;
+			}
+		}
+		return null;
+	}
+
+	findConnectorAt(mpos: Point) {
+		// calculate distance to line segment for each connector, return if within threshold
+		const threshold = 0.6;
+		for (const con of this.connectors) {
+			const from = new Point(con.from[0] + 0.5, con.from[1] + 0.5);
+			const to = new Point(con.to[0] + 0.5, con.to[1] + 0.5);
+			const distance = shortestDistanceToSegment(mpos, from, to);
+			if (distance <= threshold) {
+				return con;
 			}
 		}
 		return null;

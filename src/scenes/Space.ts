@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import { Triggie } from "../sprites/Triggie.js";
 
 import { LevelState, TriggieData } from "../sim/LevelState";
-import { randomInt } from "../util/random.js";
 
 export const VIEWPORT_SIZE = 320;
 

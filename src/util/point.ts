@@ -7,14 +7,8 @@ export interface IPoint {
 
 export class Point implements IPoint {
 
-	x: number;
-	y: number;
-
-	constructor(x: number, y: number) {
-		this.x = x;
-		this.y = y;
-	}
-	
+	constructor(public x: number, public y: number) {}
+   	
 	// TODO: rename to turnCcw() to indicate that this is only right turns
 	/**
 	 * @param {*} degrees must be a multiple of 90. Positive: rotate left. Negative: rotate right
@@ -134,7 +128,7 @@ export class Point implements IPoint {
 	}
 
 	static length(p: IPoint) {
-		return Math.sqrt(p.x * p.x + p.y * p.y);
+		return Math.hypot(p.x, p.y);
 	}
 
 	length() {
@@ -157,4 +151,39 @@ export class Point implements IPoint {
 	floor() {
 		return new Point(Math.floor(this.x), Math.floor(this.y));
 	}
+
+	dot(other: Point): number {
+		return this.x * other.x + this.y * other.y;
+	}
+
+	cross(other: Point): number {
+		return this.x * other.y - this.y * other.x;
+	}
+
+	distanceTo(other: Point): number {
+		return this.minus(other).length();
+	}
 }
+
+export function shortestDistanceToSegment(point: Point, segmentStart: Point, segmentEnd: Point): number {
+	const segment = segmentEnd.minus(segmentStart);
+	const toPoint = point.minus(segmentStart);
+
+	const segmentLengthSquared = segment.dot(segment);
+
+	// If the segment is a point (start and end are the same)
+	if (segmentLengthSquared === 0) {
+		return point.distanceTo(segmentStart);
+	}
+
+	// Project the point onto the line, parameterized by t
+	// t = (toPoint * segment) / (segment * segment)
+	let t = toPoint.dot(segment) / segmentLengthSquared;
+
+	// Clamp t to the [0, 1] range (segment bounds)
+	t = Math.max(0, Math.min(1, t));
+
+	const closestPoint = segmentStart.plus(segment.scale(t));
+	return point.distanceTo(closestPoint);
+}
+

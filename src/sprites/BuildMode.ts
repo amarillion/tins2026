@@ -87,12 +87,20 @@ export class ConnectorBuildMode implements DragHandler {
 			this.graphics.clear();
 		}
 		else if (currentMode === "Delete") {
-			const comp = this.level.findComponentAt(mpos);
-			if (comp && !comp.fixed) {
-				this.level.deleteComponent(comp);
-				// connectors will be automatically deleted as well.
-			}
 			this.graphics.clear();
+			const comp = this.level.findComponentAt(mpos);
+			if (comp) {
+				if (comp && !comp.fixed) {
+					this.level.deleteComponent(comp);
+					// connectors will be automatically deleted as well.
+				}
+			}
+			else {
+				const con = this.level.findConnectorAt(mpos);
+				if (con) {
+					this.level.deleteConnector(con);
+				}
+			}
 		}
 
 	}
@@ -107,7 +115,7 @@ export class ConnectorBuildMode implements DragHandler {
 			this.graphics.clear();
 			this.graphics.lineStyle(2, isValid ? 0x00cc00 : 0x0000cc, 0.5);
 			this.graphics.strokeLineShape(
-				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, mpos.x * 16 + 8, mpos.y * 16 + 8)
+				new Phaser.Geom.Line(this.fromPos!.x * 16 + 8, this.fromPos!.y * 16 + 8, mpos.x * 16 + 8, mpos.y * 16 + 8),
 			);
 		}
 
@@ -126,13 +134,28 @@ export class ConnectorBuildMode implements DragHandler {
 			this.graphics.fillRect(mpos.x * 16, mpos.y * 16, size[0] * 16, size[1] * 16);
 		}
 		else if (currentMode === "Delete") {
+			this.graphics.clear();
 			const comp = this.level.findComponentAt(mpos);
-			if (comp && !comp.fixed) {
-				const info = getComponentInfo(comp.componentType);
-				this.graphics.clear();
-				this.graphics.fillStyle(0xcc0000, 0.5);
-				this.graphics.fillRect(comp.mx * 16, comp.my * 16, info.size[0] * 16, info.size[1] * 16);
+			if (comp) {
+				if (!comp.fixed) {
+					const info = getComponentInfo(comp.componentType);
+					this.graphics.fillStyle(0xcc0000, 0.5);
+					this.graphics.fillRect(comp.mx * 16, comp.my * 16, info.size[0] * 16, info.size[1] * 16);
+				}
 			}
+			else {
+				const con = this.level.findConnectorAt(mpos);
+				if (con) {
+					this.graphics.lineStyle(5, 0x00cccc, 0.5);
+					this.graphics.strokeLineShape(
+						new Phaser.Geom.Line(
+							(con.from[0] + 0.5) * 16, (con.from[1] + 0.5) * 16,
+							(con.to[0] + 0.5) * 16, (con.to[1] + 0.5) * 16,
+						),
+					);
+				}
+			}
+				
 		}
 	}
 	
