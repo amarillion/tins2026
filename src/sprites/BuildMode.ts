@@ -34,13 +34,16 @@ const componentTypeMap: Record<string, string> = {
 	"-": "sub",
 	"÷": "div",
 	"✕": "mul",
-	"int-frac": "int_frac",
+	"int+frac": "int_frac",
 	"lerp": "lerp",
 	"clock": "simple_clock",
 	"dial": "integer",
 	"increment": "inc",
+	"decrement": "dec",
 	"monitor": "monitor",
 	"abs": "abs",
+	"neg": "neg",
+	"sign": "sign",
 };
 		
 export class ConnectorBuildMode implements DragHandler {

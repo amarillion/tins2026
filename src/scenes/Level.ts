@@ -125,9 +125,9 @@ export default class extends Phaser.Scene {
 		const components = [
 			"sin+cos", "+", "-", "÷", "✕", "int+frac", "lerp", "clock", "dial", "increment",
 			// nice to have:
-			"monitor", "abs",
+			"monitor", "abs", "decrement", "neg", "sign",
 			// maybe
-			// "if", "<", "neg", "sig", "modulo", "sin", "cos", "atan2", "clock+", "Matrix",
+			// "if", "<", "modulo", "sin", "cos", "atan2", "clock+", "Matrix",
 		];
 
 		const other = [

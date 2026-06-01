@@ -399,6 +399,17 @@ export class LevelState {
 	
 	deleteConnector(con: Connector) {
 		this.connectors = this.connectors.filter(c => c !== con);
+		
+		// delete port mappings
+		if (con.fromComponent && con.fromPort) {
+			const connectors = con.fromComponent.connectorMap.get(con.fromPort) ?? [];
+			con.fromComponent.connectorMap.set(con.fromPort, connectors.filter(c => c !== con));
+		}
+		if (con.toComponent && con.toPort) {
+			const connectors = con.toComponent.connectorMap.get(con.toPort) ?? [];
+			con.toComponent.connectorMap.set(con.toPort, connectors.filter(c => c !== con));
+		}
+		
 		this.onConnectorDeleted.dispatch(con);
 	}
 

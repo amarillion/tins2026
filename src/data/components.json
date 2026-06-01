@@ -146,6 +146,24 @@
 			}
 		},
 
+		"dec": {
+			"name": "Decrement by 1",
+			"size": [ 4, 1 ],
+			"tileIdx": 228,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 0],
+					"type": "out",
+					"calc": "A - 1"
+				}
+			}
+		},
+
+
 		"abs": {
 			"name": "Absolute Value",
 			"size": [ 4, 1 ],
