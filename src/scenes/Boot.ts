@@ -18,6 +18,8 @@ export default class extends Phaser.Scene {
 		this.load.spritesheet('portraits', './images/portraits.png', { frameWidth: 64, frameHeight: 64 });
 		this.load.atlas('flares', 'images/flares.png', 'images/flares.json');
 		this.load.spritesheet('container', 'images/container.png', { frameWidth: 320, frameHeight: 40 });
+		this.load.audio('track0', './music/01 - BackspinZX - Malevolent Machine.ogg');
+		// this.load.audio('track1', './music/07 - Milau - Jade & Mechanics.ogg');
 	}
 
 	create() {
@@ -54,6 +56,8 @@ export default class extends Phaser.Scene {
 			this.scene.start('TinsSplash');
 		}
 
+		this.sound.stopAll();
+		this.sound.play('track0', { loop: true });
 	}
 
 }
