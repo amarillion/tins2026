@@ -43,12 +43,14 @@ export default class extends Phaser.Scene {
 			this.time.delayedCall(3000, () => {
 				assert(this.level);
 				if (isWin) {
+					this.sound.play('explode');
 					for (const trig of this.level.triggies) {
 						trig.clear('explode');
 					}
 				}
 				else {
 					// let all trigges return
+					this.sound.play('triggies-return');
 					for (const trig of this.level.triggies) {
 						trig.clear('return');
 					}

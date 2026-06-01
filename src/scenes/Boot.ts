@@ -20,6 +20,15 @@ export default class extends Phaser.Scene {
 		this.load.spritesheet('container', 'images/container.png', { frameWidth: 320, frameHeight: 40 });
 		this.load.audio('track0', './music/01 - BackspinZX - Malevolent Machine.ogg');
 		// this.load.audio('track1', './music/07 - Milau - Jade & Mechanics.ogg');
+
+		this.load.audio('explode', 'sfx/explode2.ogg');
+		this.load.audio('component-placed', 'sfx/blockplace2.ogg');
+		this.load.audio('denied', 'sfx/denied.ogg');
+		this.load.audio('component-delete', 'sfx/blockplace.ogg');
+		this.load.audio('connect', 'sfx/connect.ogg');
+		this.load.audio('laser', 'sfx/Laser_Cannon-Mike_Koenig-797224747.ogg');
+		this.load.audio('triggies-return', 'sfx/fugly3.ogg');
+
 	}
 
 	create() {
@@ -57,7 +66,7 @@ export default class extends Phaser.Scene {
 		}
 
 		this.sound.stopAll();
-		this.sound.play('track0', { loop: true });
+		this.sound.play('track0', { loop: true, volume: 0.33 });
 	}
 
 }

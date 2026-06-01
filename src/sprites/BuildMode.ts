@@ -83,6 +83,10 @@ export class ConnectorBuildMode implements DragHandler {
 				comp.my = mpos.y;
 				comp.fixed = false;
 				this.level.addComponent(comp);
+				this.scene.sound.play('component-placed');
+			}
+			else {
+				this.scene.sound.play('denied');
 			}
 			this.graphics.clear();
 		}
@@ -92,12 +96,14 @@ export class ConnectorBuildMode implements DragHandler {
 			if (comp) {
 				if (comp && !comp.fixed) {
 					this.level.deleteComponent(comp);
+					this.scene.sound.play('component-delete');
 					// connectors will be automatically deleted as well.
 				}
 			}
 			else {
 				const con = this.level.findConnectorAt(mpos);
 				if (con) {
+					this.scene.sound.play('component-delete');
 					this.level.deleteConnector(con);
 				}
 			}
@@ -172,6 +178,10 @@ export class ConnectorBuildMode implements DragHandler {
 			const isValid = fromPort && toPort && fromPort.portType !== toPort.portType;
 			if (isValid) {
 				this.level.createConnector(this.fromPos, this.toPos);
+				this.scene.sound.play('connect');
+			}
+			else {
+				this.scene.sound.play('denied');
 			}
 		}
 	}

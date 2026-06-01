@@ -100,6 +100,7 @@ export default class extends Phaser.Scene {
 				[ "Fire Laser", () => {
 					this.oldPlaybackMode = this.playbackMode;
 					this.playbackMode = "Fire";
+					this.sound.play('laser');
 					if (this.level) this.level.fireLaser();
 				} ],
 			];
