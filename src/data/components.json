@@ -45,6 +45,48 @@
 			}
 		},
 
+		"add": {
+			"name": "Addition",
+			"size": [ 4, 2 ],
+			"tileIdx": 224,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"B": {
+					"delta": [0, 1],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 1],
+					"type": "out",
+					"calc": "A + B"
+				}
+			}
+		},
+
+		"sub": {
+			"name": "Subtraction",
+			"size": [ 4, 2 ],
+			"tileIdx": 160,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"B": {
+					"delta": [0, 1],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 1],
+					"type": "out",
+					"calc": "A - B"
+				}
+			}
+		},
+
 		"mul": {
 			"name": "Multiplication",
 			"size": [ 4, 2 ],
@@ -100,6 +142,57 @@
 					"delta": [3, 0],
 					"type": "out",
 					"calc": "A + 1"
+				}
+			}
+		},
+
+		"abs": {
+			"name": "Absolute Value",
+			"size": [ 4, 1 ],
+			"tileIdx": 264,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 0],
+					"type": "out",
+					"calc": "abs(A)"
+				}
+			}
+		},
+
+		"neg": {
+			"name": "Negate Value",
+			"size": [ 4, 1 ],
+			"tileIdx": 268,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 0],
+					"type": "out",
+					"calc": "0 - A"
+				}
+			}
+		},
+
+		"sign": {
+			"name": "Sign Function",
+			"size": [ 4, 1 ],
+			"tileIdx": 272,
+			"ports": {
+				"A": {
+					"delta": [0, 0],
+					"type" : "in"
+				},
+				"U": {
+					"delta": [3, 0],
+					"type": "out",
+					"calc": "sign(A)"
 				}
 			}
 		},

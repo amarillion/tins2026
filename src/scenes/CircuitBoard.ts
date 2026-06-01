@@ -28,6 +28,11 @@ class ComponentView {
 		}
 	}
 
+	destroy() {
+		this.graphics?.destroy();
+		this.text?.destroy();
+	}
+
 	update() {
 		const pos = new Point(this.component.mx * TILE_WIDTH, this.component.my * TILE_HEIGHT);
 		switch (this.component.componentType) {
@@ -105,7 +110,23 @@ export class CircuitBoard extends Phaser.Scene {
 		this.level = data.level;
 
 		this.level.onComponentAdded((c: Component) => this.onComponentAdded(c));
-		this.level.onConnectorAdded((con: Connector) => this.onConnectorAdded(con));
+		this.level.onConnectorAdded((con: Connector) => this.drawConnector(con));
+		this.level.onComponentDeleted.add((comp: Component) => {
+			// clear tilemap
+			for (let dx = 0; dx < comp.info.size[0]; dx++) {
+				for (let dy = 0; dy < comp.info.size[1]; dy++) {
+					this.layer0?.removeTileAt(comp.mx + dx, comp.my + dy);
+				}
+			}
+			const view = this.components.find(c => c.component === comp);
+			view?.destroy();
+			this.components = this.components.filter(c => c.component !== comp);
+		});
+		this.level.onConnectorDeleted.add((con: Connector) => {
+			this.connectorGraphics?.clear();
+			this.redrawConnectors();
+			
+		});
 
 		this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.onDown(pointer));
 		this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.onUp(pointer));
@@ -183,7 +204,7 @@ export class CircuitBoard extends Phaser.Scene {
 		drawComponent(this.layer0!, comp.mx, comp.my, comp.componentType);
 	}
 
-	onConnectorAdded(con: Connector) {
+	drawConnector(con: Connector) {
 		const line = new Phaser.Geom.Line(
 			(con.from[0] + 0.5) * TILE_WIDTH, (con.from[1] + 0.5) * TILE_HEIGHT,
 			(con.to[0] + 0.5) * TILE_WIDTH, (con.to[1] + 0.5) * TILE_HEIGHT,
@@ -196,4 +217,10 @@ export class CircuitBoard extends Phaser.Scene {
 	update() {
 		this.components.forEach(c => c.update());
 	}
+
+	redrawConnectors() {
+		this.connectorGraphics?.clear();
+		this.level?.connectors.forEach(con => this.drawConnector(con));
+	}
+	
 }

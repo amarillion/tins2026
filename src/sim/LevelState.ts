@@ -55,6 +55,7 @@ export class Component {
 	value = 0; // used for dials.
 	readonly portValues = new Map<string, number>();
 	readonly connectorMap = new Map<string, Connector[]>();
+	readonly onDeleted = new Signal<void>();
 
 	constructor(componentType: string) {
 		this.info = getComponentInfo(componentType);
@@ -291,7 +292,7 @@ export class LevelState {
 	}
 
 	handleLaserKill(laserCo: Point) {
-		const CUTOFF_DISTANCE = 0.03;
+		const CUTOFF_DISTANCE = 0.05;
 		// find a triggie within range...
 		for (const trig of this.triggies) {
 			const dist = Point.length(laserCo.minus(trig));
@@ -379,6 +380,26 @@ export class LevelState {
 		if (this.cbConnectorAdded) {
 			this.cbConnectorAdded(con);
 		}
+	}
+
+	deleteComponent(comp: Component) {
+		this.onComponentDeleted.dispatch(comp);
+		this.components = this.components.filter(c => c !== comp);
+	
+		// also delete connectors attached to it.
+		for(const con of this.connectors) {
+			if (con.fromComponent === comp || con.toComponent === comp) {
+				this.deleteConnector(con);
+			}
+		}
+	}
+
+	readonly onComponentDeleted = new Signal<Component>();
+	readonly onConnectorDeleted = new Signal<Connector>();
+	
+	deleteConnector(con: Connector) {
+		this.connectors = this.connectors.filter(c => c !== con);
+		this.onConnectorDeleted.dispatch(con);
 	}
 
 	cbComponentAdded?: (comp: Component) => void;

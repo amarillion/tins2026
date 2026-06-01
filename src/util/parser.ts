@@ -285,6 +285,7 @@ export class Evaluator {
 		this.registerFunction('ceil', (args: number[]) => Math.ceil(args[0]));
 		this.registerFunction('lerp', (args: number[]) => args[0] + args[2] * (args[1] - args[0]));
 		this.registerFunction('frac', (args: number[]) => args[0] - Math.floor(args[0]));
+		this.registerFunction('sign', (args: number[]) => Math.sign(args[0]));
 	}
 	
 	public registerFunction(name: string, fn: (args: number[]) => number): void {

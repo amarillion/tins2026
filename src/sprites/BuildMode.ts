@@ -30,8 +30,8 @@ export class BuildModeSwitch {
 
 const componentTypeMap: Record<string, string> = {
 	"sin+cos": "sincos",
-	// "+": "",
-	// "-": "",
+	"+": "add",
+	"-": "sub",
 	"÷": "div",
 	"✕": "mul",
 	"int-frac": "int_frac",
@@ -40,7 +40,7 @@ const componentTypeMap: Record<string, string> = {
 	"dial": "integer",
 	"increment": "inc",
 	"monitor": "monitor",
-	// "abs",
+	"abs": "abs",
 };
 		
 export class ConnectorBuildMode implements DragHandler {
@@ -78,9 +78,8 @@ export class ConnectorBuildMode implements DragHandler {
 		else if (currentMode === "Delete") {
 			const comp = this.level.findComponentAt(mpos);
 			if (comp) {
-				console.log("I want to delete ", comp);
-				// delete connectors
-				// TODO
+				this.level.deleteComponent(comp);
+				// connectors will be automatically deleted as well.
 			}
 		}
 
